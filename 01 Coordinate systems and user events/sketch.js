@@ -58,10 +58,8 @@ function fourthCircle(){
 }
 
 function centerCircle(){
-  let cenCircleW = width/2;
-  let cenCircleH = height/2;
   fill(0,255,0); 
   stroke(0, 0, 255); 
   strokeWeight(3);    
-  circle(cenCirleW, cenCircleH, 50);
+  circle(width/2, height/2, 50);
 }
