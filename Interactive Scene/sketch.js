@@ -8,13 +8,15 @@
 let randomDotX;
 let randomDotY;
 let star;
+let x = mouseX;
+let y = mouseY;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
   background(65, 74, 76);
   drawMoon();
   // Draw Star:
-  for(let i = 0; i <= 15; i++){         //  NOT WORKING
+  for(let i = 0; i <= 20; i++){         
     if(drawStar === false){
       i = i;
     }
@@ -27,6 +29,7 @@ function setup() {
 
 function draw() {
   drawEarth();
+  rocket();
 }
 
 
@@ -51,7 +54,7 @@ function drawEarth(){
   circle(0 + 150, 0 + 100, 100);
 
 }
-function drawStar(){               //     NOT WORKING
+function drawStar(){               
   randomDotX = random(0, width);
   randomDotY = random(0, height);
   stroke(249, 243, 100);
@@ -67,4 +70,14 @@ function drawStar(){               //     NOT WORKING
 
 
 // -----------Interactive Character-----------
+function rocket(){
+  fill('white');
+  triangle(width/2, height/2 - 15, width/2 - 15,  //   Set width/2 and height/2 to the mouse
+    height/2, width/2 + 15, height/2);
+  square(width/2 - 15, height/2, 30);
+  rect(width/2 - 15, height/2 + 30, 8, 20);
+  rect(width/2 + 7, height/2 + 30, 8, 20);
+  fill('black');
+  circle(width/2, height/2 + 8, 15);
 
+}
