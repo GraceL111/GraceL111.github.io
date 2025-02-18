@@ -1,35 +1,49 @@
 // Interactive Scene
 // Grace Li
 // Feb 11 2025
-
-// - describe what you did to take this project "above and beyond"
+// This interactive scene is based in space, with 3 backgrounds, 
+// and many key features including an interactive character (rocket) and background interactions. 
 
 // Global Variable Declaration:
 let randomDotX;
 let randomDotY;
 let star;
-let x = mouseX;
-let y = mouseY;
+let oneShape = true; 
+let numStars = 0;
+
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  background(65, 74, 76);
-  drawMoon();
-  // Draw Star:
-  for(let i = 0; i <= 20; i++){         
-    if(drawStar === false){
-      i = i;
-    }
-    else{
-      drawStar();
-    }
+  for(let i = 0; i <= 20; i++){
+    drawStar();
   }
 }
 
 
 function draw() {
+  background(65, 74, 76);
   drawEarth();
-  rocket();
+  drawMoon();
+  if(numStars <= 20){
+    drawStar();
+    numStars ++; 
+  }
+  else{
+    break;
+  }
+  
+
+  // if(oneShape === true){
+  //   rocket();
+  //   oneShape = false;                                              
+  // }
+  // else{
+  //   oneShape = true; 
+  // }
+  
+ 
+
+
 }
 
 
@@ -52,19 +66,15 @@ function drawEarth(){
   fill(70, 215, 235);
   noStroke();
   circle(0 + 150, 0 + 100, 100);
+  // Use green curved lines if possible
 
 }
 function drawStar(){               
-  randomDotX = random(0, width);
-  randomDotY = random(0, height);
+  randomDotX = random(0, width - 100);
+  randomDotY = random(0, height - 60);
   stroke(249, 243, 100);
   strokeWeight(5);
-  if(randomDotX > width - 100 || randomDotY > height - 60){
-    return false;
-  }
-  else{
-    star = point(randomDotX, randomDotY);
-  }
+  point(randomDotX, randomDotY);
 }
 
 
@@ -72,12 +82,11 @@ function drawStar(){
 // -----------Interactive Character-----------
 function rocket(){
   fill('white');
-  triangle(width/2, height/2 - 15, width/2 - 15,  //   Set width/2 and height/2 to the mouse
-    height/2, width/2 + 15, height/2);
-  square(width/2 - 15, height/2, 30);
-  rect(width/2 - 15, height/2 + 30, 8, 20);
-  rect(width/2 + 7, height/2 + 30, 8, 20);
-  fill('black');
-  circle(width/2, height/2 + 8, 15);
+  triangle(mouseX, mouseY - 15, mouseX - 15, mouseY, mouseX + 15, mouseY);
+  // square(width/2 - 15, height/2, 30);
+  // rect(width/2 - 15, height/2 + 30, 8, 20);
+  // rect(width/2 + 7, height/2 + 30, 8, 20);
+  // fill('black');
+  // circle(width/2, height/2 + 8, 15);
 
 }
