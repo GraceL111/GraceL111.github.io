@@ -10,27 +10,21 @@ let randomDotY;
 let star;
 let oneShape = true; 
 let numStars = 0;
-
+let starPosX = [];
+let starPosY = [];
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  for(let i = 0; i <= 20; i++){
-    drawStar();
-  }
+  background(65, 74, 76);
 }
 
 
 function draw() {
-  background(65, 74, 76);
+
   drawEarth();
   drawMoon();
-  if(numStars <= 20){
-    drawStar();
-    numStars ++; 
-  }
-  else{
-    break;
-  }
+  drawStar();
+
   
 
   // if(oneShape === true){
@@ -74,7 +68,13 @@ function drawStar(){
   randomDotY = random(0, height - 60);
   stroke(249, 243, 100);
   strokeWeight(5);
-  point(randomDotX, randomDotY);
+  if(numStars < 20){       // storing random positions so to print consistent
+    point(randomDotX, randomDotY);     // star positions after each background refresh 
+    starPosX.push(randomDotX); 
+    starPosY.push(randomDotY);
+
+    numStars ++; 
+  }
 }
 
 
