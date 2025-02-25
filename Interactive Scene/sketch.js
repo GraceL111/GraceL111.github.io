@@ -12,6 +12,7 @@ let oneShape = true;
 let numStars = 0;
 let starPosX = [];
 let starPosY = [];
+let backgroundColour = 74;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -20,7 +21,10 @@ function setup() {
 
 
 function draw() {
-  background(65, 74, 76);
+  background(65, backgroundColour, 76);
+  textSize(30);
+  fill(500);
+  text('Grace', 0 + 15, height - 15);
   drawMars();
   drawMoon();
   drawStar();
@@ -33,7 +37,7 @@ function draw() {
 
 
 
-
+//      ------------Background--------
 
 function drawMoon(){
   fill(128, 137, 142);
@@ -61,7 +65,9 @@ function drawStar(){
   }
 }
 function generateStar(){               
-  while(numStars < 20){       // storing random positions so to print consistent    // star positions after each background refresh 
+  while(numStars < 20){       
+    // storing random positions so to print consistent star 
+    // positions after each background refresh 
     randomDotX = random(0, width - 100);
     randomDotY = random(0, height - 60);
     starPosX.push(randomDotX); 
@@ -85,3 +91,18 @@ function rocket(){
   circle(mouseX, mouseY + 8, 15);
 
 }
+
+
+// ---------Mouse Interaction -------------
+function mousePressed(){
+  for(let w = 0; w < 5; w++){
+    backgroundColour += 8;
+    background(65, backgroundColour, 76)
+  }
+  if(backgroundColour > 265){
+    backgroundColour = 74;
+  }
+}
+
+
+//      UFO, Key board reset?  challenge feature
