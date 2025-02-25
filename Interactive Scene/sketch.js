@@ -15,25 +15,16 @@ let starPosY = [];
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  background(65, 74, 76);
+  generateStar();
 }
 
 
 function draw() {
-
-  drawEarth();
+  background(65, 74, 76);
+  drawMars();
   drawMoon();
   drawStar();
-
-  
-
-  // if(oneShape === true){
-  //   rocket();
-  //   oneShape = false;                                              
-  // }
-  // else{
-  //   oneShape = true; 
-  // }
+  rocket();
   
  
 
@@ -56,23 +47,25 @@ function drawMoon(){
   circle(width/1.034, height/1.4, 50);
 }
 
-function drawEarth(){
-  fill(70, 215, 235);
+function drawMars(){
+  fill(211, 150, 103);
   noStroke();
   circle(0 + 150, 0 + 100, 100);
-  // Use green curved lines if possible
 
 }
-function drawStar(){               
-  randomDotX = random(0, width - 100);
-  randomDotY = random(0, height - 60);
+function drawStar(){
   stroke(249, 243, 100);
   strokeWeight(5);
-  if(numStars < 20){       // storing random positions so to print consistent
-    point(randomDotX, randomDotY);     // star positions after each background refresh 
+  for(let i = 0; i < starPosX.length; i++){
+    point(starPosX[i], starPosY[i]);
+  }
+}
+function generateStar(){               
+  while(numStars < 20){       // storing random positions so to print consistent    // star positions after each background refresh 
+    randomDotX = random(0, width - 100);
+    randomDotY = random(0, height - 60);
     starPosX.push(randomDotX); 
     starPosY.push(randomDotY);
-
     numStars ++; 
   }
 }
@@ -81,12 +74,14 @@ function drawStar(){
 
 // -----------Interactive Character-----------
 function rocket(){
+  noStroke();
   fill('white');
   triangle(mouseX, mouseY - 15, mouseX - 15, mouseY, mouseX + 15, mouseY);
-  // square(width/2 - 15, height/2, 30);
-  // rect(width/2 - 15, height/2 + 30, 8, 20);
-  // rect(width/2 + 7, height/2 + 30, 8, 20);
-  // fill('black');
-  // circle(width/2, height/2 + 8, 15);
+  square(mouseX - 15, mouseY, 30);
+  rect(mouseX - 15, mouseY + 30, 8, 20);
+  rect(mouseX + 7, mouseY + 30, 8, 20);
+  fill('black');
+  noStroke();
+  circle(mouseX, mouseY + 8, 15);
 
 }
