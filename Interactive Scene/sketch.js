@@ -8,11 +8,13 @@
 let randomDotX;
 let randomDotY;
 let star;
-let oneShape = true; 
+let ufo;
 let numStars = 0;
 let starPosX = [];
 let starPosY = [];
 let backgroundColour = 74;
+
+
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -22,6 +24,7 @@ function setup() {
 
 function draw() {
   background(65, backgroundColour, 76);
+  createUFO();
   textSize(30);
   fill(500);
   text('Grace', 0 + 15, height - 15);
@@ -97,12 +100,31 @@ function rocket(){
 function mousePressed(){
   for(let w = 0; w < 5; w++){
     backgroundColour += 8;
-    background(65, backgroundColour, 76)
+    background(65, backgroundColour, 76);
   }
   if(backgroundColour > 265){
     backgroundColour = 74;
+    return false;
   }
 }
+
+function createUFO(){
+  fill(65, 265, 76);
+  let xValue = width/2;
+  let yValue = height/2;
+  arc(xValue, yValue, 100, 100, PI, HALF_PI - HALF_PI);
+  if(keyIsDown(LEFT_ARROW) === true){
+    xValue -= 1;
+    arc(xValue, yValue, 100, 100, PI, HALF_PI - HALF_PI);
+  }
+  ellipse(width/2, height/2, 130, 30);
+  fill('black');
+  circle(width/2 - 34, height/2, 15);
+  circle(width/2, height/2, 15);
+  circle(width/2 + 34, height/2, 15);
+}
+
+
 
 
 //      UFO, Key board reset?  challenge feature
