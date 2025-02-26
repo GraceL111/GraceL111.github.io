@@ -15,6 +15,8 @@ let starPosY = [];
 let backgroundColour = 74;
 let xValue;
 let yValue;
+let currentBack = 0;
+let backgroundColour2 = 65;
 
 
 
@@ -27,7 +29,7 @@ function setup() {
 
 
 function draw() {
-  background(65, backgroundColour, 76);
+  background(backgroundColour2, backgroundColour, 76);
   createUFO();
   textSize(30);
   fill(500);
@@ -135,6 +137,22 @@ function createUFO(){
   circle(xValue - 34, yValue, 15);
   circle(xValue, yValue, 15);
   circle(xValue + 34, yValue, 15);
+}
+
+
+// ------- Challenge Feature --------
+function changeBackground(){
+  switch(currentBack){
+    case 1:
+      backgroundColour2 += 10;
+      break;
+    case 2:
+      backgroundColour2 += 10;
+      break;
+    case 3: 
+      backgroundColour2 += 10;
+      break;
+  }
 }
 
 
