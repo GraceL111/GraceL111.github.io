@@ -13,12 +13,16 @@ let numStars = 0;
 let starPosX = [];
 let starPosY = [];
 let backgroundColour = 74;
+let xValue;
+let yValue;
 
 
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
   generateStar();
+  xValue = width/2;
+  yValue = height/2;
 }
 
 
@@ -104,27 +108,33 @@ function mousePressed(){
   }
   if(backgroundColour > 265){
     backgroundColour = 74;
-    return false;
   }
 }
+
 
 function createUFO(){
   fill(65, 265, 76);
-  let xValue = width/2;
-  let yValue = height/2;
   arc(xValue, yValue, 100, 100, PI, HALF_PI - HALF_PI);
   if(keyIsDown(LEFT_ARROW) === true){
-    xValue -= 1;
-    arc(xValue, yValue, 100, 100, PI, HALF_PI - HALF_PI);
+    xValue -= 5;
   }
-  ellipse(width/2, height/2, 130, 30);
+  if(keyIsDown(RIGHT_ARROW) === true){
+    xValue += 5;
+  }
+  if(keyIsDown(UP_ARROW) === true){
+    yValue -= 5;
+  }
+  if(keyIsDown(DOWN_ARROW) === true){
+    yValue += 5;
+  }
+
+
+  arc(xValue, yValue, 100, 100, PI, HALF_PI - HALF_PI);
+  ellipse(xValue, yValue, 130, 30);
   fill('black');
-  circle(width/2 - 34, height/2, 15);
-  circle(width/2, height/2, 15);
-  circle(width/2 + 34, height/2, 15);
+  circle(xValue - 34, yValue, 15);
+  circle(xValue, yValue, 15);
+  circle(xValue + 34, yValue, 15);
 }
 
 
-
-
-//      UFO, Key board reset?  challenge feature
