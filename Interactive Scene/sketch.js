@@ -22,7 +22,7 @@ let alienY;
 let showAlien = false;
 
 function preload(){
-  alien = loadImage("alien-gif.gif");
+  alien = loadImage("assets/alien-gif.gif");
 }
 
 function setup() {
@@ -30,6 +30,9 @@ function setup() {
   generateStar();
   xValue = width/2;
   yValue = height/2;
+  imageMode(CENTER);
+  alienX = width;
+  alienY = height/2;
 }
 
 
@@ -60,12 +63,15 @@ function draw() {
   rocket();
 
 //   -----------Call Alien--------------
-  alienX = width/2;
-  alienY = height/2 + 30;
   if(showAlien === true){
-    image(alien, alienX, 60, 60);          //     Debug here
+    alienX -= 2;
+    image(alien, alienX, alienY, 200, 200);
+    
+    if(alienX < -10){
+      showAlien = false;
+      alienX = width;
+    }
   }
-
 }
 
 
@@ -82,7 +88,7 @@ function mousePressed(){
 
 function drawMoon(){
   fill(128, 137, 142);
-  circle(width - 100, height - 60, 600);
+  circle(width - 100, height - 60, 500);
   fill(	80, 80, 80);
   noStroke();
   circle(width/1.2, height/1.2, 40);
