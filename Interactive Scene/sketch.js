@@ -50,16 +50,18 @@ function draw() {
     case 3: 
       background(0, backgroundColour, 100);
       break;
-  }
+    }
 
 
   createUFO();
   textSize(30);
   fill(500);
   text('Grace', 0 + 15, height - 15);
-  drawMars();
-  drawMoon();
   drawStar();
+  drawMoon();
+  drawMars();
+
+
   rocket();
 
 //   -----------Call Alien--------------
@@ -88,7 +90,8 @@ function mousePressed(){
 
 function drawMoon(){
   fill(128, 137, 142);
-  circle(width - 100, height - 60, 500);
+  noStroke();
+  circle(width - 100, height - 60, 600);
   fill(	80, 80, 80);
   noStroke();
   circle(width/1.2, height/1.2, 40);
