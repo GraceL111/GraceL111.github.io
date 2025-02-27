@@ -16,9 +16,14 @@ let backgroundColour = 74;
 let xValue;
 let yValue;
 let currentBack = 0;
-let backgroundColour2 = 65;
+let alien;
+let alienX;
+let alienY;
+let showAlien = false;
 
-
+function preload(){
+  alien = loadImage("alien-gif.gif");
+}
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -29,7 +34,22 @@ function setup() {
 
 
 function draw() {
-  background(backgroundColour2, backgroundColour, 76);
+  switch(currentBack){
+    case 0:
+      background(65, backgroundColour, 76);
+      break;
+    case 1:
+      background(100, backgroundColour, 0);
+      break;
+    case 2:
+      background(0, backgroundColour, 0);
+      break;
+    case 3: 
+      background(0, backgroundColour, 100);
+      break;
+  }
+
+
   createUFO();
   textSize(30);
   fill(500);
@@ -38,11 +58,23 @@ function draw() {
   drawMoon();
   drawStar();
   rocket();
-  
- 
 
+//   -----------Call Alien--------------
+  alienX = width/2;
+  alienY = height/2 + 30;
+  if(showAlien === true){
+    image(alien, alienX, 60, 60);          //     Debug here
+  }
 
 }
+
+
+// ------  All Mouse Interactions --------
+function mousePressed(){
+  mouseInt();
+  changeBackground();
+}
+
 
 
 
@@ -103,16 +135,18 @@ function rocket(){
 
 
 // ---------Mouse Interaction -------------
-function mousePressed(){
-  for(let w = 0; w < 5; w++){
-    backgroundColour += 8;
-    background(65, backgroundColour, 76);
-  }
-  if(backgroundColour > 265){
-    backgroundColour = 74;
+function mouseInt(){
+  if(mouseButton === LEFT){
+    backgroundColour += 20;
+    if( backgroundColour > 265){
+      showAlien = true;
+      backgroundColour = 74;
+    }
   }
 }
 
+
+// ------------Key Board Interaction ------------
 
 function createUFO(){
   fill(65, 265, 76);
@@ -140,19 +174,16 @@ function createUFO(){
 }
 
 
-// ------- Challenge Feature --------
+//   ------- Challenge Feature --------
+
 function changeBackground(){
-  switch(currentBack){
-    case 1:
-      backgroundColour2 += 10;
-      break;
-    case 2:
-      backgroundColour2 += 10;
-      break;
-    case 3: 
-      backgroundColour2 += 10;
-      break;
+  if (mouseButton === CENTER){
+    currentBack += 1;
+    if(currentBack > 3){
+      currentBack = 0;
+    }
   }
 }
+
 
 
