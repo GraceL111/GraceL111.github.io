@@ -1,8 +1,9 @@
 // Interactive Scene
 // Grace Li
 // Feb 11 2025
-// This interactive scene is based in space, with 3 backgrounds, 
-// and many key features including an interactive character (rocket) and background interactions. 
+// This interactive scene is based in space, with 4 different-coloured backgrounds, 
+// and many key features including an interactive character following the mouse (rocket), 
+// a keyboard controlled UFO, and background interactions. 
 
 // Global Variable Declaration:
 let randomDotX;
@@ -37,6 +38,7 @@ function setup() {
 
 
 function draw() {
+  // -----------Challenge Feature ---------------
   switch(currentBack){
     case 0:
       background(65, backgroundColour, 76);
@@ -60,9 +62,8 @@ function draw() {
   drawStar();
   drawMoon();
   drawMars();
-
-
   rocket();
+
 
 //   -----------Call Alien--------------
   if(showAlien === true){
