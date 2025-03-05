@@ -7,6 +7,9 @@
 
 let rectWidth = 1;
 let rectHeight;
+let highestPeak = 0;
+let x2;
+
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -14,7 +17,6 @@ function setup() {
 
 function draw() {
   background(220);
-  drawFlag(200, 200);
   generateTerrain();
 }
 
@@ -25,26 +27,40 @@ function generateTerrain(){
   // to look like some 2D Terrain
 
   let noiseX = 0;
-  fill('black');
+  stroke('black');
+  noFill();
 
   rectMode(CORNERS);
   for(let x = 0; x < width; x += rectWidth){
+    
     //generate a random height
     rectHeight = noise(noiseX) * height;
+
     // Find the other corner of our rectangle
-    let x2 = x + rectWidth;
+    x2 = x + rectWidth;
     let y2 = height - rectHeight;
 
     rect(x, height, x2, y2);
 
+    // Identifying the highest peak:
+
+    if(y2 > highestPeak){
+      highestPeak = y2;
+      highestX = x2;
+    }
+
     noiseX += 0.01;
   }
+  drawFlag(highestX, highestPeak);
 
 
   rectMode(CORNER);
 }
 
 function keyPressed(){
+
+  // Interactive Width: Left arrow decrease width, right arrow increase width
+
   if(keyCode === LEFT_ARROW){
     if(rectWidth <= 1){
       rectWidth = 1;
@@ -64,7 +80,7 @@ function keyPressed(){
 }
 
 function drawFlag(x, y){
-
+  // draw flag position
   let flagWidth = 3; 
   let flagHeight = 35;
   fill('green');
