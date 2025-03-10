@@ -1,14 +1,18 @@
 // Perlin Noise Assignment
 // Grace Li
 // March 3, 2025
-//
-//
+
+// Using Perlin Noise to generate a terrain. It features a marked highest peak, 
+// convertable width using the arrow key, and a calculated average height per frame (Line). 
 
 
 let rectWidth = 1;
 let rectHeight;
 let highestPeak;
 let highestX;
+let startNoise = 0;
+let frameHeight;
+let averageHeight;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -25,7 +29,7 @@ function generateTerrain(){
   // several rectangles side to side
   // to look like some 2D Terrain
 
-  let noiseX = 0;
+  let noiseX = startNoise;
   stroke('black');
   noFill();
 
@@ -33,6 +37,7 @@ function generateTerrain(){
 
   highestPeak = height;
   highestX = 0;
+  frameHeight = 0;
   
   for(let x = 0; x < width; x += rectWidth){
     
@@ -53,8 +58,16 @@ function generateTerrain(){
     }
 
     noiseX += 0.01;
+    frameHeight += rectHeight;
   }
+
+  // Calculate the average height per frame
+  averageHeight = frameHeight/ (width/rectWidth);   // dividing height by the number of rectangles
+  
+  startNoise += 0.01;
   drawFlag(highestX, highestPeak);
+  drawAverage(height - averageHeight);
+
 
 
   rectMode(CORNER);
@@ -83,6 +96,7 @@ function keyPressed(){
 }
 
 function drawFlag(x, y){
+  // Draw flag at the top of the highest peak
 
   rectMode(CORNER);
 
@@ -100,4 +114,10 @@ function drawFlag(x, y){
 
   //Draw flag
   rect(x, y - poleHeight, flagWidth, flagHeight);
+}
+
+function drawAverage(h){
+  // draw average-height-line 
+  fill('red');
+  rect(0, h, width, 5);
 }
