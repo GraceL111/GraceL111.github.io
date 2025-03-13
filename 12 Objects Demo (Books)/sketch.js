@@ -4,20 +4,34 @@
 
 
 let myBook;
+let myBook1;
+let bookshelf = [];
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
+  // Make 20 books in a row
+  let x = 50;
+  let covers = ["softcover", "hardcover", "leatherbound"];
+  for(let i = 0; i < 20; i++){
+    let choice = int(random(3));
+    bookshelf.push(new Book("A", "Mr.Booth", 123, covers[choice], 200, x));
+    x += 20;
+  }
+
+
+
+
+
   myBook = new Book("CS30 Text", "Mr.Scott", 1234567891011, "leatherbound", 515, width*0.3);
-  myBook1 = new Book("Grace", "GraceL", 1234567891012, "softcover", 34, width*2);
   myBook.printOut();
-  myBook1.printOut();
 }
 
 function draw() {
   background(220);
   myBook.display();
-  myBook1.display();
 }
+
+
 
 // Nice to organize class at the bottom.
 class Book{
