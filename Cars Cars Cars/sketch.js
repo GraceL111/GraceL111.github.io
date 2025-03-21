@@ -9,7 +9,7 @@ let testCar;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  testCar = new Vehicle(width/2, height/2, 0, 'red', 1, 10);
+  testCar = new Vehicle(width/2, height/2, 1, 'red', 0, 10);
 }
 
 function draw() {
@@ -52,6 +52,8 @@ class Vehicle{
   display(){
     let wheelWidth = 10;
     let wheelHeight = 5;
+
+    //  ------ Car ----------
     if (this.type === 0){  //  0 = car
       let carWidth = 55;
       let carHeight = 25;
@@ -64,13 +66,20 @@ class Vehicle{
       rect(this.x, this.y + carHeight, wheelWidth, wheelHeight);
       rect(this.x + (carWidth - wheelWidth), this.y + carHeight, wheelWidth, wheelHeight);
     }
+
+    // ------- Truck ----------
     else if(this.type === 1){    //  1 = truck
       let truckWidth = 60;
       let truckHeight = 45;
       fill(this.color);
       //noStroke();
       rect(this.x, this.y, truckWidth, truckHeight);
-      rect(this.x + truckWidth, this.y + 8, 15, 30);
+      if(this.direction === 0){
+        rect(this.x + truckWidth, this.y + 8, 15, 30);
+      }
+      else if(this.direction === 1){
+        rect(this.x - 15, this.y + 8, 15, 30);
+      }
 
       // --- wheels -----
       fill('white');
