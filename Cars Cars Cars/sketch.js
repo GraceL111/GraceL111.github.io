@@ -6,17 +6,18 @@
 
 
 let testCar;
+let pickSpeed;
+let randomNum;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  testCar = new Vehicle(width/2, height/2, 1, 'red', 0, 10);
+  testCar = new Vehicle(width/2, height/2, 1, 'red', 1, 10);
 }
 
 function draw() {
   background(220);
   drawRoad();
-  testCar.display();
-  testCar.move();
+  testCar.action();
 }
 
 function drawRoad(){
@@ -105,12 +106,36 @@ class Vehicle{
 
   }
   speedUp(){
-
+    this.xSpeed += 1;
+    if(this.xSpeed > 15){
+      this.xSpeed = 15;
+    }
   }
   speedDown(){
-
+    this.xSpeed -= 1;
+    if(this.xSpeed <= 0){
+      this.xSpeed = 1;
+    }
   }
   changeColor(){
 
+  }
+
+  action(){
+    this.display();
+    this.move();
+
+    // ---- 1% Chance -------
+    randomNum = round(random(100)); //        these functions are not Independent of each other
+    if(randomNum === 1){ //                   which they do not have a 1% chance each
+      pickSpeed = round(random(1));
+      if(pickSpeed === 0){  // 0 = speed up
+        this.speedUp();
+      }
+      if(pickSpeed === 1){  // 1 = speed down
+        this.speedDown();
+      }
+    }
+    //print(this.xSpeed);
   }
 }
