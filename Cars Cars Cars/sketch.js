@@ -7,10 +7,22 @@
 
 let testCar;
 let pickSpeed;
-let randomNum;
+let randomNum1;
+let randomNum2;
+let randomNum3;
+let ranColor = [];
+let carColor;
+
+let eastbound = [];
+let westbound = [];
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
+  ranColor.push('red', 'yellow', 'blue', 'green', 'purple', 'orange',);
+  for(let i = 0; i < 20; i++){
+    if()
+  }
+
   testCar = new Vehicle(width/2, height/2, 1, 'red', 1, 10);
 }
 
@@ -23,7 +35,7 @@ function draw() {
 function drawRoad(){
   // ------ draw gravel -------
   fill('black');
-  let roadHeight = (width/2) - (width/2)/2;
+  let roadHeight = width/2 - (width/2)/2;
   rect(0, roadHeight, width, roadHeight*2);
 
   // ------draw line ------
@@ -46,9 +58,6 @@ class Vehicle{
   }
 
   // ------- Class Properties --------
-  action(){
-
-  }
   
   display(){
     let wheelWidth = 10;
@@ -118,7 +127,8 @@ class Vehicle{
     }
   }
   changeColor(){
-
+    carColor = floor(random(ranColor.length));
+    this.color = ranColor[carColor];
   }
 
   action(){
@@ -126,16 +136,20 @@ class Vehicle{
     this.move();
 
     // ---- 1% Chance -------
-    randomNum = round(random(100)); //        these functions are not Independent of each other
-    if(randomNum === 1){ //                   which they do not have a 1% chance each
-      pickSpeed = round(random(1));
-      if(pickSpeed === 0){  // 0 = speed up
-        this.speedUp();
-      }
-      if(pickSpeed === 1){  // 1 = speed down
-        this.speedDown();
-      }
+    randomNum1 = round(random(100)); 
+    if(randomNum1 === 1){ //     
+      this.speedUp();
     }
-    //print(this.xSpeed);
+    randomNum2 = round(random(100)); 
+    if(randomNum2 === 1){ //     
+      this.speedDown();
+    }
+    randomNum3 = round(random(100)); 
+    if(randomNum3 === 1){ //     
+      this.changeColor();
+    }
+    
+    // print(this.xSpeed);
+    // print(this.color);
   }
 }
