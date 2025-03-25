@@ -25,13 +25,13 @@ function setup() {
       let ranType = round(random(1));
       let choseColor = floor(random(ranColorlist.length));
       let ranColor = ranColorlist[choseColor];
-      westbound.push(new Vehicle(0, random(height/2 - 15, height/2 + (height/2)/2 - 30), ranType, ranColor, 0, -1*ranxSpeed));
+      westbound.push(new Vehicle(0, random(height/2 + 10, height/2 + (height/2)/2 - 30), ranType, ranColor, 0, -1*ranxSpeed));
     }
     if(ranxSpeed > 0){  //  positive xSpeed
       let ranType = round(random(1));
       let choseColor = floor(random(ranColorlist.length));
       let ranColor = ranColorlist[choseColor];
-      eastbound.push(new Vehicle(width, random((height/2 - (height/2)/2) + 10, height/2 - 35), ranType, ranColor, 1, ranxSpeed));
+      eastbound.push(new Vehicle(width, random((height/2 - 50, height/2 - (height/2)/2)), ranType, ranColor, 1, ranxSpeed));
     }
     
   }
@@ -42,12 +42,12 @@ function setup() {
 function draw() {
   background(220);
   drawRoad();
-  for(let currentCar of westbound){        //  I missed up west and east, so west is now east
+  for(let currentCar of westbound){        //  I missed up west and east, so west is now east (vise versa)
     currentCar.action();
   }
-  // for(let currentCar1 of eastbound){
-  //   currentCar1.action();
-  // }
+  for(let currentCar1 of eastbound){
+    currentCar1.action();
+  }
 }
 
 function drawRoad(){
@@ -100,7 +100,6 @@ class Vehicle{
       let truckWidth = 60;
       let truckHeight = 45;
       fill(this.color);
-      //noStroke();
       rect(this.x, this.y, truckWidth, truckHeight);
       if(this.direction === 0){
         rect(this.x + truckWidth, this.y + 8, 15, 30);
