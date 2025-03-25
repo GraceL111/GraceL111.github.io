@@ -10,7 +10,7 @@ let pickSpeed;
 let randomNum1;
 let randomNum2;
 let randomNum3;
-let ranColor = [];
+let ranColorlist = [];
 let carColor;
 
 let eastbound = [];
@@ -18,30 +18,48 @@ let westbound = [];
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  ranColor.push('red', 'yellow', 'blue', 'green', 'purple', 'orange',);
+  ranColorlist.push('red', 'yellow', 'blue', 'green', 'purple', 'orange',);
   for(let i = 0; i < 20; i++){
-    if()
+    let ranxSpeed = floor(random(-15, 15));
+    if(ranxSpeed < 0){  //  negative xSpeed
+      let ranType = round(random(1));
+      let choseColor = floor(random(ranColorlist.length));
+      let ranColor = ranColorlist[choseColor];
+      westbound.push(new Vehicle(0, random(height/2 - 15, height/2 + (height/2)/2 - 30), ranType, ranColor, 0, -1*ranxSpeed));
+    }
+    if(ranxSpeed > 0){  //  positive xSpeed
+      let ranType = round(random(1));
+      let choseColor = floor(random(ranColorlist.length));
+      let ranColor = ranColorlist[choseColor];
+      eastbound.push(new Vehicle(width, random((height/2 - (height/2)/2) + 10, height/2 - 35), ranType, ranColor, 1, ranxSpeed));
+    }
+    
   }
 
-  testCar = new Vehicle(width/2, height/2, 1, 'red', 1, 10);
+  // testCar = new Vehicle(width/2, height/2, 1, 'red', 1, 10);
 }
 
 function draw() {
   background(220);
   drawRoad();
-  testCar.action();
+  for(let currentCar of westbound){        //  I missed up west and east, so west is now east
+    currentCar.action();
+  }
+  // for(let currentCar1 of eastbound){
+  //   currentCar1.action();
+  // }
 }
 
 function drawRoad(){
   // ------ draw gravel -------
   fill('black');
-  let roadHeight = width/2 - (width/2)/2;
-  rect(0, roadHeight, width, roadHeight*2);
+  let roadHeight = height/2 - (height/2)/2;
+  rect(0, roadHeight - 30, width, roadHeight*2 + 50);
 
   // ------draw line ------
   for(let i = 0; i < width; i += 25){
     fill('yellow');
-    rect(i, width/2, 12, 4);
+    rect(i, height/2, 12, 4);
   }
 }
 
@@ -127,8 +145,8 @@ class Vehicle{
     }
   }
   changeColor(){
-    carColor = floor(random(ranColor.length));
-    this.color = ranColor[carColor];
+    carColor = floor(random(ranColorlist.length));
+    this.color = ranColorlist[carColor];
   }
 
   action(){
