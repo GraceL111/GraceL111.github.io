@@ -15,6 +15,8 @@ let choseColor;
 let ranColor;
 let ranType;
 let ranxSpeed;
+let yRangeE;
+let yRangeW;
 
 let eastbound = [];
 let westbound = [];
@@ -55,20 +57,24 @@ function draw() {
 }
 
 function mousePressed(){
-  if(mouseButton === LEFT){
+  if(mouseButton === LEFT && !(keyCode === SHIFT)){
     ranType = round(random(1));
     choseColor = floor(random(ranColorlist.length));
     ranColor = ranColorlist[choseColor];
     ranxSpeed = floor(random(1, 15));
-    westbound.push(new Vehicle(0, random(height/2 + 10, height/2 + (height/2)/2 - 30), ranType, ranColor, 0, ranxSpeed));
+    yRangeW = random(height/2 + 10, height/2 + (height/2)/2 - 30);
+    westbound.push(new Vehicle(0, yRangeW, ranType, ranColor, 0, ranxSpeed));
   }
-  if(mouseButton === RIGHT){
+  if(keyCode === SHIFT && mouseButton ===LEFT){
     ranType = round(random(1));
     choseColor = floor(random(ranColorlist.length));
     ranColor = ranColorlist[choseColor];
     ranxSpeed = floor(random(-15, -1));
-    eastbound.push(new Vehicle(0, random(height/2 + 10, height/2 + (height/2)/2 - 30), ranType, ranColor, 0, ranxSpeed));
+    yRangeE = random(height/2 - (height/2)/2, height/2 - 50);
+    eastbound.push(new Vehicle(width, yRangeE, ranType, ranColor, 1, ranxSpeed));
   }
+  print(westbound);
+  //print(eastbound);
 }
 
 function drawRoad(){
