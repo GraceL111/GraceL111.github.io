@@ -5,13 +5,16 @@
 // 
 
 
-let testCar;
 let pickSpeed;
 let randomNum1;
 let randomNum2;
 let randomNum3;
 let ranColorlist = [];
 let carColor;
+let choseColor;
+let ranColor;
+let ranType;
+let ranxSpeed;
 
 let eastbound = [];
 let westbound = [];
@@ -19,24 +22,25 @@ let westbound = [];
 function setup() {
   createCanvas(windowWidth, windowHeight);
   ranColorlist.push('red', 'yellow', 'blue', 'green', 'purple', 'orange',);
+
+// ---------- Push in 20 cars--------------
+
   for(let i = 0; i < 20; i++){
-    let ranxSpeed = floor(random(-15, 15));
+    ranxSpeed = floor(random(-15, 15));
     if(ranxSpeed < 0){  //  negative xSpeed
-      let ranType = round(random(1));
-      let choseColor = floor(random(ranColorlist.length));
-      let ranColor = ranColorlist[choseColor];
+      ranType = round(random(1));
+      choseColor = floor(random(ranColorlist.length));
+      ranColor = ranColorlist[choseColor];
       westbound.push(new Vehicle(0, random(height/2 + 10, height/2 + (height/2)/2 - 30), ranType, ranColor, 0, -1*ranxSpeed));
     }
     if(ranxSpeed > 0){  //  positive xSpeed
-      let ranType = round(random(1));
-      let choseColor = floor(random(ranColorlist.length));
-      let ranColor = ranColorlist[choseColor];
-      eastbound.push(new Vehicle(width, random((height/2 - 50, height/2 - (height/2)/2)), ranType, ranColor, 1, ranxSpeed));
+      ranType = round(random(1));
+      choseColor = floor(random(ranColorlist.length));
+      ranColor = ranColorlist[choseColor];
+      eastbound.push(new Vehicle(width, random(height/2 - (height/2)/2, height/2 - 50), ranType, ranColor, 1, ranxSpeed));
     }
     
   }
-
-  // testCar = new Vehicle(width/2, height/2, 1, 'red', 1, 10);
 }
 
 function draw() {
@@ -47,6 +51,23 @@ function draw() {
   }
   for(let currentCar1 of eastbound){
     currentCar1.action();
+  }
+}
+
+function mousePressed(){
+  if(mouseButton === LEFT){
+    ranType = round(random(1));
+    choseColor = floor(random(ranColorlist.length));
+    ranColor = ranColorlist[choseColor];
+    ranxSpeed = floor(random(1, 15));
+    westbound.push(new Vehicle(0, random(height/2 + 10, height/2 + (height/2)/2 - 30), ranType, ranColor, 0, ranxSpeed));
+  }
+  if(mouseButton === RIGHT){
+    ranType = round(random(1));
+    choseColor = floor(random(ranColorlist.length));
+    ranColor = ranColorlist[choseColor];
+    ranxSpeed = floor(random(-15, -1));
+    eastbound.push(new Vehicle(0, random(height/2 + 10, height/2 + (height/2)/2 - 30), ranType, ranColor, 0, ranxSpeed));
   }
 }
 
