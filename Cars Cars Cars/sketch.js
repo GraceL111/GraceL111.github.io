@@ -22,14 +22,14 @@ let eastbound = [];
 let westbound = [];
 
 let trafficL;
-let timer;
+let timer = 0;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
   ranColorlist.push('red', 'yellow', 'blue', 'green', 'purple', 'orange',);
 
 // ---------- Push in 20 cars--------------
-
+//     I missed up west and east, so east is now west (Vise Versa)
   for(let i = 0; i < 20; i++){
     ranxSpeed = floor(random(-15, 15));
     if(ranxSpeed < 0){  //  negative xSpeed
@@ -55,26 +55,24 @@ function draw() {
   background(220);
   drawRoad();
   trafficL.display();
-  for(let currentCar of westbound){        //  I missed up west and east, so west is now east (vise versa)
-    currentCar.action();
+
+  for(let currentCar of westbound){
+    currentCar.display();
+    if(trafficL.lightColor === 'green'){
+      currentCar.move();
+    }
   }
   for(let currentCar1 of eastbound){
-    currentCar1.action();
+    currentCar1.display();
+    if(trafficL.lightColor === 'green'){
+      currentCar1.move();
+    }
   }
 
   if(keyCode === 32 && keyIsPressed){
-    trafficL.lightColor ='red';
-    trafficL.countDown = 120;
-  //   trafficL.display();
-    
-  //   for(let currentCar of westbound){ 
-  //     currentCar.display();     
-  //   }
-  //   for(let currentCar1 of eastbound){
-  //     currentCar1.display();
-  //   }        
-  //   countFrames();
-   }
+    trafficL.turnRed();
+  }        
+    countFrames();
 }
 
 function countFrames(){
@@ -84,17 +82,11 @@ function countFrames(){
   else{
     trafficL = new TrafficLight('green');
     timer = 0;
-    for(let currentCar of westbound){       
-      currentCar.action();
-    }
-    for(let currentCar1 of eastbound){
-      currentCar1.action();
-    }
   }
 }
 
 function mousePressed(){
-  if(mouseButton === LEFT && !(keyCode === SHIFT)){
+  if(mouseButton === LEFT && !keyIsDown(SHIFT)){
     ranType = round(random(1));
     choseColor = floor(random(ranColorlist.length));
     ranColor = ranColorlist[choseColor];
@@ -102,7 +94,7 @@ function mousePressed(){
     yRangeW = random(height/2 + 10, height/2 + (height/2)/2 - 30);
     westbound.push(new Vehicle(0, yRangeW, ranType, ranColor, 0, ranxSpeed));
   }
-  if(keyCode === SHIFT && mouseButton ===LEFT){
+  if(keyIsDown(SHIFT) && mouseButton ===LEFT){
     ranType = round(random(1));
     choseColor = floor(random(ranColorlist.length));
     ranColor = ranColorlist[choseColor];
@@ -138,12 +130,14 @@ class TrafficLight{
   display(){
     fill(this.lightColor);
     circle(width/2, 0 + 50, 30);
-    this.countDown -= 1;
-    if(this.countDown <= 0){
+    if(this.countDown > 0){
+      this.countDown -= 1;
+    }
+    if(this.countDown <= 0 && this.lightColor === 'red'){
       this.lightColor = 'green';
     }
   }
-  action(){
+  actionL(){
     if(this.lightColor === 'red'){
       for(let currentCar of westbound){ 
         currentCar.display();     
@@ -152,14 +146,10 @@ class TrafficLight{
         currentCar1.display();
       }
     }
-    if(this.lightColor === 'green'){
-      for(let currentCar of westbound){ 
-        currentCar.action();     
-      }
-      for(let currentCar1 of eastbound){
-        currentCar1.action();
-      }
-    }
+  }
+  turnRed(){
+    trafficL.lightColor ='red';
+    trafficL.countDown = 120;
   }
 }
 
