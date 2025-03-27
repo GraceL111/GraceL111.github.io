@@ -21,6 +21,9 @@ let yRangeW;
 let eastbound = [];
 let westbound = [];
 
+let trafficL;
+let timer;
+
 function setup() {
   createCanvas(windowWidth, windowHeight);
   ranColorlist.push('red', 'yellow', 'blue', 'green', 'purple', 'orange',);
@@ -43,16 +46,50 @@ function setup() {
     }
     
   }
+
+  // ------ Traffic Light ---------
+  trafficL = new TrafficLight('green');
 }
 
 function draw() {
   background(220);
   drawRoad();
+  trafficL.display();
   for(let currentCar of westbound){        //  I missed up west and east, so west is now east (vise versa)
     currentCar.action();
   }
   for(let currentCar1 of eastbound){
     currentCar1.action();
+  }
+
+  if(keyCode === 32 && keyIsPressed){
+    trafficL.lightColor ='red';
+    trafficL.countDown = 120;
+  //   trafficL.display();
+    
+  //   for(let currentCar of westbound){ 
+  //     currentCar.display();     
+  //   }
+  //   for(let currentCar1 of eastbound){
+  //     currentCar1.display();
+  //   }        
+  //   countFrames();
+   }
+}
+
+function countFrames(){
+  if(timer < 120){
+    timer += 1;
+  }
+  else{
+    trafficL = new TrafficLight('green');
+    timer = 0;
+    for(let currentCar of westbound){       
+      currentCar.action();
+    }
+    for(let currentCar1 of eastbound){
+      currentCar1.action();
+    }
   }
 }
 
@@ -74,7 +111,7 @@ function mousePressed(){
     eastbound.push(new Vehicle(width, yRangeE, ranType, ranColor, 1, ranxSpeed));
   }
   print(westbound);
-  //print(eastbound);
+  print(eastbound);
 }
 
 function drawRoad(){
@@ -90,6 +127,41 @@ function drawRoad(){
   }
 }
 
+class TrafficLight{
+  // -----constructor ------------
+  constructor(color){
+    this.lightColor = color;
+    this.countDown = 0;
+  }
+
+  // ---------- Class Properties --------------
+  display(){
+    fill(this.lightColor);
+    circle(width/2, 0 + 50, 30);
+    this.countDown -= 1;
+    if(this.countDown <= 0){
+      this.lightColor = 'green';
+    }
+  }
+  action(){
+    if(this.lightColor === 'red'){
+      for(let currentCar of westbound){ 
+        currentCar.display();     
+      }
+      for(let currentCar1 of eastbound){
+        currentCar1.display();
+      }
+    }
+    if(this.lightColor === 'green'){
+      for(let currentCar of westbound){ 
+        currentCar.action();     
+      }
+      for(let currentCar1 of eastbound){
+        currentCar1.action();
+      }
+    }
+  }
+}
 
 class Vehicle{
   // -----Constructor --------
