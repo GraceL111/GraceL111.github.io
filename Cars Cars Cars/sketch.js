@@ -59,20 +59,20 @@ function draw() {
   for(let currentCar of westbound){
     currentCar.display();
     if(trafficL.lightColor === 'green'){
-      currentCar.move();
+      currentCar.action();
     }
   }
   for(let currentCar1 of eastbound){
     currentCar1.display();
     if(trafficL.lightColor === 'green'){
-      currentCar1.move();
+      currentCar1.action();
     }
   }
 
   if(keyCode === 32 && keyIsPressed){
     trafficL.turnRed();
   }        
-    countFrames();
+  countFrames();
 }
 
 function countFrames(){
