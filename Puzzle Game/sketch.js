@@ -1,8 +1,8 @@
-// 16 2D Array Basics
+// Puzzle Game
 // Grace Li
-// April 2nd
+// April 3rd
 //
-// Working with 2D Arrays, visualization
+// 
 
 let grid = 
 [
