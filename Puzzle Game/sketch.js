@@ -59,20 +59,51 @@ function mousePressed(){
   let y = getCurrentY();
 
   //always: flip the current tile
-  flip(x,y);
-  // sometimes: depending on position, flip the neighbours
-  if(y > 0){
-    flip(x, y-1);
+  if(mouseButton === LEFT && keyIsDown(SHIFT)){
+    flip(x,y);
   }
-  if(x > 0){
-    flip(x - 1, y);
+  else{
+    flip(x,y);
+    // sometimes: depending on position, flip the neighbours
+    if(y > 0){
+      flip(x, y-1);
+    }
+    if(x > 0){
+      flip(x - 1, y);
+    }
+    if(x < NUM_COLS - 1){
+      flip(x + 1, y);
+    }
+    if(y < NUM_ROWS - 1){
+      flip(x, y+1);
+    }
   }
-  if(x < NUM_COLS - 1){
-    flip(x + 1, y);
+
+  let successList = [];
+
+  for(let y = 0; y < NUM_ROWS; y++){
+    for(let x = 0; x < NUM_COLS; x++){
+      if(grid[y][x] === 255){
+        successList.push('white');
+      }
+      if(grid[y][x] === 0){
+        successList.push('black');
+      }
+    }
   }
-  if(y < NUM_ROWS - 1){
-    flip(x, y+1);
+  print(successList);
+}
+
+function ifIdentical(successList){
+  for(let i = 0; i < successList.length; i++){
+    if(successList[i] === successList[i + 1]){
+      return true;
+    }
+    else{
+      return false;
+    }
   }
+
 }
 
 function flip(x,y){
