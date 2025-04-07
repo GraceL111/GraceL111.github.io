@@ -14,6 +14,7 @@ let grid =
 let squareSize = 60;
 const NUM_ROWS = 3;
 const NUM_COLS = 5;
+let successList = [];
 
 function setup() {
   createCanvas(NUM_COLS * squareSize, NUM_ROWS * squareSize);
@@ -52,7 +53,7 @@ function getCurrentX(){
 }
 
 function mousePressed(){
-  // flip current tile to a randim greyscale value 
+  // flip current tile to a random greyscale value 
   // only do something if mouseX/ mouseY are on the canvas. 
 
   let x = getCurrentX();
@@ -79,8 +80,7 @@ function mousePressed(){
     }
   }
 
-  let successList = [];
-
+  // Loop through all values and check for completion
   for(let y = 0; y < NUM_ROWS; y++){
     for(let x = 0; x < NUM_COLS; x++){
       if(grid[y][x] === 255){
@@ -103,7 +103,6 @@ function ifIdentical(successList){
       return false;
     }
   }
-
 }
 
 function flip(x,y){
