@@ -59,12 +59,22 @@ function draw() {
   for(let currentCar of westbound){
     currentCar.display();
     if(trafficL.lightColor === 'green'){
+<<<<<<< HEAD
+=======
+      currentCar.display();
+      currentCar.move();
+>>>>>>> 1afc51e035fe133712655ef8e711675ad2e045e5
       currentCar.action();
     }
   }
   for(let currentCar1 of eastbound){
     currentCar1.display();
     if(trafficL.lightColor === 'green'){
+<<<<<<< HEAD
+=======
+      currentCar1.display();
+      currentCar1.move();
+>>>>>>> 1afc51e035fe133712655ef8e711675ad2e045e5
       currentCar1.action();
     }
   }
@@ -95,6 +105,7 @@ function mousePressed(){
     westbound.push(new Vehicle(0, yRangeW, ranType, ranColor, 0, ranxSpeed));
   }
   if(keyIsDown(SHIFT) && mouseButton ===LEFT){
+    print('shift detected');
     ranType = round(random(1));
     choseColor = floor(random(ranColorlist.length));
     ranColor = ranColorlist[choseColor];
@@ -238,8 +249,8 @@ class Vehicle{
   }
 
   action(){
-    this.display();
-    this.move();
+    // this.display();
+    // this.move();
 
     // ---- 1% Chance -------
     randomNum1 = round(random(100)); 
