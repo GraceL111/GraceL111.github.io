@@ -16,14 +16,32 @@ const NUM_ROWS = 3;
 const NUM_COLS = 5;
 let successList = [];
 
+let x; 
+let y;
+
 function setup() {
   createCanvas(NUM_COLS * squareSize, NUM_ROWS * squareSize);
+  choseTile();
 }
 
 function draw() {
   background(220);
   renderGrid();
+  colorOverlay();
+}
 
+function choseTile(){
+  for(let y = 0; y < NUM_ROWS; y++){
+    for(let x = 0; x < NUM_COLS; x++){
+      let randomTile = round(random(0, 1));
+      if(randomTile === 0){     // white
+        grid[y][x] = 255;
+      }
+      if(randomTile === 1){     // Black
+        grid[y][x] = 0;
+      }
+    }
+  }
 }
 
 function renderGrid(){
@@ -52,12 +70,23 @@ function getCurrentX(){
   return floor(constrainedX / squareSize);
 }
 
-function mousePressed(){
+function colorOverlay(){
+  // Color overlay on the nearby tiles
+  x = getCurrentX();
+  y = getCurrentY();
+
+  if(y > 0){
+    
+  }
+
+}
+
+function mouseClicked(){
   // flip current tile to a random greyscale value 
   // only do something if mouseX/ mouseY are on the canvas. 
 
-  let x = getCurrentX();
-  let y = getCurrentY();
+  x = getCurrentX();
+  y = getCurrentY();
 
   //always: flip the current tile
   if(mouseButton === LEFT && keyIsDown(SHIFT)){
@@ -80,6 +109,17 @@ function mousePressed(){
     }
   }
 
+  collectTiles();
+  ifIdentical(successList);
+  if(ifIdentical(successList) === true){
+    fill('red');
+    text('YOU WIN', (NUM_COLS * squareSize)/2, (NUM_ROWS * squareSize)/2);         // Not Showing on Screen
+    print(1);
+  }
+}
+
+function collectTiles(){
+  successList = [];
   // Loop through all values and check for completion
   for(let y = 0; y < NUM_ROWS; y++){
     for(let x = 0; x < NUM_COLS; x++){
@@ -91,18 +131,15 @@ function mousePressed(){
       }
     }
   }
-  print(successList);
 }
 
-function ifIdentical(successList){
-  for(let i = 0; i < successList.length; i++){
-    if(successList[i] === successList[i + 1]){
-      return true;
-    }
-    else{
+function ifIdentical(list){
+  for(let i = 0; i < list.length; i++){
+    if(list[i] !== list[0]){
       return false;
     }
   }
+  return true;
 }
 
 function flip(x,y){
