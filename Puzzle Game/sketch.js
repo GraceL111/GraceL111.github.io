@@ -28,6 +28,7 @@ function draw() {
   background(220);
   renderGrid();
   colorOverlay();
+  printWin();
 }
 
 function choseTile(){
@@ -74,11 +75,27 @@ function colorOverlay(){
   // Color overlay on the nearby tiles
   x = getCurrentX();
   y = getCurrentY();
+  
+  let currentTile = grid[y][x];
+  let currentX = x;
+  let currentY = y;
+  //print(currentX);
 
-  if(y > 0){
-    
-  }
+  colorTile(x, y);
+  colorTile(x +1, y);
+  colorTile(x-1, y);
+  colorTile(x, y-1);
 
+  // if(x !== currentX || y !== currentY){
+  //   print(1);
+  //   grid[y][x] = currentTile;
+  // }
+  // if(y > 0){
+  //   colorTile(x, y-1);
+  //   if(x !== currentX || y !== currentY){
+  //     grid[y][x] = currentTile;
+  //   }
+  // }
 }
 
 function mouseClicked(){
@@ -109,15 +126,19 @@ function mouseClicked(){
     }
   }
 
+  
+}
+
+function printWin(){
   collectTiles();
   ifIdentical(successList);
   if(ifIdentical(successList) === true){
     fill('red');
-    text('YOU WIN', (NUM_COLS * squareSize)/2, (NUM_ROWS * squareSize)/2);         // Not Showing on Screen
+    text('YOU WIN', 100, 100);   
+    //text('YOU WIN', (NUM_COLS * squareSize)/2, (NUM_ROWS * squareSize)/2);      // Not displaying
     print(1);
   }
 }
-
 function collectTiles(){
   successList = [];
   // Loop through all values and check for completion
@@ -140,6 +161,20 @@ function ifIdentical(list){
     }
   }
   return true;
+}
+
+function colorTile(x,y){
+  // Color Overlay
+  if(x >= 0 && x <= 4 && y >= 0 && y<=2){
+    if(grid[y][x] === 0){
+      fill(50, 120, 50);
+      square(x*squareSize, y*squareSize, squareSize);   // dark green
+    }
+    else{
+      fill(100, 255, 100);
+      square(x*squareSize, y*squareSize, squareSize);      // light green
+    }
+  }
 }
 
 function flip(x,y){
