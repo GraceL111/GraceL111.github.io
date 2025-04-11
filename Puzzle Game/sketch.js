@@ -2,7 +2,7 @@
 // Grace Li
 // April 3rd
 //
-// 
+// A grid puzzle game with a cheat system, and 2 types of hover style
 
 let grid = 
 [
@@ -19,6 +19,8 @@ let successList = [];
 let x; 
 let y;
 
+let crossShapeTrue = true;
+
 function setup() {
   createCanvas(NUM_COLS * squareSize, NUM_ROWS * squareSize);
   choseTile();
@@ -32,6 +34,7 @@ function draw() {
 }
 
 function choseTile(){
+  // randomly generate tiles
   for(let y = 0; y < NUM_ROWS; y++){
     for(let x = 0; x < NUM_COLS; x++){
       let randomTile = round(random(0, 1));
@@ -72,73 +75,91 @@ function getCurrentX(){
 }
 
 function colorOverlay(){
-  // Color overlay on the nearby tiles
+  // Color overlay on the nearby tiles according to shapes
   x = getCurrentX();
   y = getCurrentY();
   
-  let currentTile = grid[y][x];
-  let currentX = x;
-  let currentY = y;
-  //print(currentX);
+  if(crossShapeTrue === true){
+    crossShape();
+  }
+  else if(crossShapeTrue === false){
+    squareShape();
+  }
+}
 
+function keyPressed(){
+  if(keyCode === 32){
+    if(crossShapeTrue === true){    // overlay cross shape
+      crossShapeTrue = false;
+    }
+    else{                           // overlay square shape
+      crossShapeTrue = true;
+    }
+  }
+}
+    
+
+function squareShape(){
+  // color overlay of square shape
+  colorTile(x, y);
+  colorTile(x+1, y);
+  colorTile(x, y-1);
+  colorTile(x+1, y-1);
+}
+
+function crossShape(){
+  // color overlay of cross shape
   colorTile(x, y);
   colorTile(x +1, y);
   colorTile(x-1, y);
   colorTile(x, y-1);
-
-  // if(x !== currentX || y !== currentY){
-  //   print(1);
-  //   grid[y][x] = currentTile;
-  // }
-  // if(y > 0){
-  //   colorTile(x, y-1);
-  //   if(x !== currentX || y !== currentY){
-  //     grid[y][x] = currentTile;
-  //   }
-  // }
+  colorTile(x, y+1);
 }
 
 function mouseClicked(){
-  // flip current tile to a random greyscale value 
   // only do something if mouseX/ mouseY are on the canvas. 
+  // Change tiles.
 
   x = getCurrentX();
   y = getCurrentY();
 
-  //always: flip the current tile
-  if(mouseButton === LEFT && keyIsDown(SHIFT)){
+  if(mouseButton === LEFT && keyIsDown(SHIFT)){     // cheat system
     flip(x,y);
   }
   else{
-    flip(x,y);
-    // sometimes: depending on position, flip the neighbours
-    if(y > 0){
-      flip(x, y-1);
+    if(crossShapeTrue === false){      // squareShape()
+      flip(x,y);
+
+      if(y > 0){
+        flip(x, y-1);
+      }
+      if(y === 0){
+        flip(x + 1, y);
+      }
+      if(x < NUM_COLS - 1){
+        flip(x + 1, y -1);
+        flip(x + 1, y)
+      }
     }
-    if(x > 0){
-      flip(x - 1, y);
-    }
-    if(x < NUM_COLS - 1){
-      flip(x + 1, y);
-    }
-    if(y < NUM_ROWS - 1){
-      flip(x, y+1);
+    else{                 // crossShape()
+      flip(x,y);
+
+      if(y > 0){
+        flip(x, y-1);
+      }
+      if(x > 0){
+        flip(x - 1, y);
+      }
+      if(x < NUM_COLS - 1){
+        flip(x + 1, y);
+      }
+      if(y < NUM_ROWS - 1){
+        flip(x, y+1);
+      }
     }
   }
-
-  
 }
 
-function printWin(){
-  collectTiles();
-  ifIdentical(successList);
-  if(ifIdentical(successList) === true){
-    fill('red');
-    text('YOU WIN', 100, 100);   
-    //text('YOU WIN', (NUM_COLS * squareSize)/2, (NUM_ROWS * squareSize)/2);      // Not displaying
-    print(1);
-  }
-}
 function collectTiles(){
   successList = [];
   // Loop through all values and check for completion
@@ -161,6 +182,15 @@ function ifIdentical(list){
     }
   }
   return true;
+}
+
+function printWin(){
+  collectTiles();
+  ifIdentical(successList);
+  if(ifIdentical(successList) === true){
+    fill('red');
+    text('YOU WIN', 100, 100);   
+  }
 }
 
 function colorTile(x,y){
