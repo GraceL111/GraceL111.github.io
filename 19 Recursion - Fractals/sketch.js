@@ -24,7 +24,7 @@ function circleFractal(x, y, d){
     circleFractal(x-d/2, y, d/2);   // to the left
     circleFractal(x + d/2, y, d/2);  // to the right
     circleFractal(x, y - d/2, d/2);   // to the top
-    circleFractal(x, y + d/2, d/2);    // to the bottom
+    //circleFractal(x, y + d/2, d/2);    // to the bottom
   }
   // implicit base case - don't recurse if the d is small
 
