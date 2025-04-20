@@ -24,29 +24,27 @@ function setup() {
 
 function draw() {
   background(220);
-  translate(-130, 0, 100);
   rotateY(frameCount);
-  //drawSnow(wSnow, hSnow);
-  drawMoreSnow();
+  rotateX(frameCount);
+
+
+  drawSnow(wSnow, hSnow, 10);
 }
 
-function drawSnow(w, h){
-  if(w > 5){
+function drawSnow(w, h, depth){
+  if(depth > 0){
     for(let i = 0; i < anglesList.length;i++){
+      push();
       plane(w,h);
-      rotateZ(i);
-      //rotateX(i);
+      rotateZ(anglesList[i]);
+
+
       drawSnow(w*0.5, h*0.5);
+      pop();
     }
   }
 }
 
-function drawMoreSnow(){
-  if(numSnow < 100){
-    translate(w*0.5, h*0.5, 30);
-    drawSnow(wSnow, hSnow);
-  }
-}
 
 
 
