@@ -18,6 +18,7 @@ document.body.appendChild(renderer.domElement);        // add a canvas
 scene.background = new THREE.Color(0xff9900);      // background color
 camera.position.z = 5;       // reposition the camera on the z axis
 
+
 const clock = new THREE.Clock();
 
 let idle, run, walk;
