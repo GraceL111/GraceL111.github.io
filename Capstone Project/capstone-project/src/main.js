@@ -5,7 +5,7 @@
 
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import { loadTree } from './Objects/LoadObject';
+import { loadOBJ, loadMTL } from './Objects/LoadObject';
 
 
 // ----------Set up-----------
@@ -30,6 +30,9 @@ const controls = new OrbitControls(camera, canvas);
 // --------Light -----------
 const light = new THREE.AmbientLight(0xffffff, 0.5);
 scene.add(light);
+const directionLight = new THREE.DirectionalLight(0xffffff, 1);
+directionLight.position.set(10, 20, 10);
+scene.add(directionLight);
 
 // ---------Create Plane ------------
 const planeGeometry = new THREE.PlaneGeometry(100, 100);
@@ -38,7 +41,8 @@ const plane = new THREE.Mesh(planeGeometry, planeMaterial);
 plane.rotation.x = THREE.MathUtils.degToRad(90);
 scene.add(plane);
 
- loadTree();
+ loadOBJ();
+ loadMTL();
 
 
 function animate(){       // draw()
