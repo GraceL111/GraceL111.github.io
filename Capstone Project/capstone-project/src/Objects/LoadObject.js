@@ -4,20 +4,16 @@ import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
 import { MTLLoader } from 'three/addons/loaders/MTLLoader.js'
 import { scene } from '../main.js'
 
-// -------Load FBX -------
+// -------Load OBJ -------
 
 const OBJloader = new OBJLoader();
-const birchTree1URL = 'assets/environmentOBJ/BirchTree_1.obj'
+const birchTree1URL = '/assets/environmentOBJ/BirchTree_1.obj'
 const mtlloader = new MTLLoader();
-const bt1_MTLURL = 'assets/environmentOBJ/BirchTree_1.mtl'
-
-export let treePos = [];
-let ranPosX = THREE.MathUtils.randInt(0, 40);
-let ranPosZ = THREE.MathUtils.randInt(0, 40);
-treePos.push([ranPosX, ranPosZ]);
+const bt1_MTLURL = '/assets/environmentOBJ/BirchTree_1.mtl'
 
 
-export function loadBirchTree1(){
+
+export function loadBirchTree1(x, z){
     mtlloader.load(
         bt1_MTLURL,
         function(mtl){
@@ -29,7 +25,7 @@ export function loadBirchTree1(){
                 function(obj){
                     const birchTree_1 = obj
                     birchTree_1.scale.set(5, 5, 5);
-                    birchTree_1.position.set(ranPosX, 0, ranPosZ);
+                    birchTree_1.position.set(x, 0, z);
                     scene.add(birchTree_1);
 
                 }

@@ -5,7 +5,7 @@
 
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import { loadBirchTree1, treePos } from './Objects/LoadObject';
+import { loadBirchTree1 } from './Objects/LoadObject';
 
 
 // ----------Set up-----------
@@ -42,18 +42,26 @@ const planeMaterial = new THREE.MeshBasicMaterial({color: 0x00ff00, side: THREE.
 const plane = new THREE.Mesh(planeGeometry, planeMaterial);
 plane.rotation.x = THREE.MathUtils.degToRad(90);
 scene.add(plane);
-console.log(treePos)
 
 //------------ Load environment -----------------
-let lastTreePos = [[0, 0]];
-let treeDistance = treePos[0][0] - lastTreePos[0][0]
-console.log(treeDistance);
-for(let i = 0; i < 5; i++){
-  if(treeDistance >= 10 || treeDistance === 0){
-    loadBirchTree1();
-  }
-  else{
-    i--;
+let lastTreePos = [0, 0];
+let treePos = [];
+
+for(let i = 0; i < 5;){
+  let ranPosX = THREE.MathUtils.randInt(0, 40);
+  let ranPosZ = THREE.MathUtils.randInt(0, 40);
+  let disX = ranPosX - lastTreePos[0];
+  let disZ = ranPosZ - lastTreePos[1];
+
+  let treeDistance = Math.sqrt((disX * disX) + (disZ * disZ));
+  // This is Euclidean Distance, used to measure straight line distances, useful in 3D
+
+  if(treeDistance >= 30){
+    console.log(treeDistance);
+    treePos.push([ranPosX, ranPosZ]);
+    loadBirchTree1(ranPosX, ranPosZ);
+    lastTreePos = [ranPosX, ranPosZ];
+    i++;
   }
 }
 
