@@ -5,7 +5,7 @@
 
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import { loadBirchTree1 } from './Objects/LoadObject';
+import { loadBirchTree1, loadMonk } from './Objects/LoadObject';
 
 
 // ----------Set up-----------
@@ -28,7 +28,7 @@ const controls = new OrbitControls(camera, canvas);
 
 
 // --------Light -----------
-const light = new THREE.AmbientLight(0xffffff, 0.5);
+const light = new THREE.AmbientLight(0xffffff, 100.5);
 scene.add(light);
 const directionLight = new THREE.DirectionalLight(0xffffff, 1);
 directionLight.position.set(50, 50, 50);
@@ -47,23 +47,39 @@ scene.add(plane);
 let lastTreePos = [0, 0];
 let treePos = [];
 
-for(let i = 0; i < 5;){
-  let ranPosX = THREE.MathUtils.randInt(0, 40);
-  let ranPosZ = THREE.MathUtils.randInt(0, 40);
-  let disX = ranPosX - lastTreePos[0];
-  let disZ = ranPosZ - lastTreePos[1];
+let ranPosX = THREE.MathUtils.randInt(-50, 35);
+let ranPosZ = THREE.MathUtils.randInt(-50, 35);
+treePos.push([ranPosX, ranPosZ]);
+loadBirchTree1(ranPosX, ranPosZ);
+for(let i = 0; i < 4;){
+  ranPosX = THREE.MathUtils.randInt(-50, 35);
+  ranPosZ = THREE.MathUtils.randInt(-50, 35);
+  let closesTree = -1;
+  for(let t of treePos){
+    let disX = ranPosX - t[0];
+    let disZ = ranPosZ - t[1];
+    let treeDistance = Math.sqrt((disX * disX) + (disZ * disZ));
+    if(treeDistance < closesTree || closesTree === -1){
+      closesTree = treeDistance;
+    }
+    //console.log(t);
+  }
 
-  let treeDistance = Math.sqrt((disX * disX) + (disZ * disZ));
-  // This is Euclidean Distance, used to measure straight line distances, useful in 3D
 
-  if(treeDistance >= 30){
-    console.log(treeDistance);
+  if(closesTree >= 30){
+    console.log(closesTree);
     treePos.push([ranPosX, ranPosZ]);
     loadBirchTree1(ranPosX, ranPosZ);
     lastTreePos = [ranPosX, ranPosZ];
     i++;
   }
+
 }
+
+loadMonk();
+
+
+
 
 
 

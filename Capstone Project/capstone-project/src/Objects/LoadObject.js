@@ -23,7 +23,7 @@ export function loadBirchTree1(x, z){
             OBJloader.load(
                 birchTree1URL, 
                 function(obj){
-                    const birchTree_1 = obj
+                    const birchTree_1 = obj;
                     birchTree_1.scale.set(5, 5, 5);
                     birchTree_1.position.set(x, 0, z);
                     scene.add(birchTree_1);
@@ -39,36 +39,18 @@ export function loadBirchTree1(x, z){
 
 
 
+// ---------Load GLTF -----------
+const GLTFloader = new GLTFLoader();
+const monkURL = '/assets/Monk.gltf';
+
+export function loadMonk(){
+    GLTFloader.load(
+        monkURL, 
+        function(gltf){
+            const monkGLTF = gltf.scene;
 
 
-
-// export function loadMTL(){
-//     mtlloader.load(
-//         bt1_MTLURL, 
-//     function(mtl){
-//         const bt1_MTL = mtl;
-//         OBJloader.setMaterials(bt1_MTL);
-//         OBJloader.load(birchTree1URL, function(birchTree){
-//             scene.add(birchTree);
-//                 }
-//             );
-//         }
-//     );
-// }
-
-// export function loadOBJ(){
-//     OBJloader.load(
-//     birchTree1URL, 
-//     function(obj){
-//         const birchTree = obj;
-        
-//         birchTree.scale.set(10, 10, 10);
-//         birchTree.position.set(0,0,0);
-//         console.log(birchTree);
-//         // const helperBox = new THREE.BoxHelper(tree, 0xffff00);
-//         // scene.add(helperBox);
-//         scene.add(birchTree);
-//         }
-//     );
-
-// }
+            scene.add(monkGLTF);
+        }
+    )
+}
