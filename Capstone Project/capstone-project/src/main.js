@@ -4,8 +4,9 @@
 // 
 
 import * as THREE from 'three';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import { loadBirchTree1, loadMonk } from './Objects/LoadObject';
+import { loadTrees, treeObjects, groundObjects, loadGroundObj } from './Objects/LoadObject';
 
 
 // ----------Set up-----------
@@ -28,7 +29,7 @@ const controls = new OrbitControls(camera, canvas);
 
 
 // --------Light -----------
-const light = new THREE.AmbientLight(0xffffff, 100.5);
+const light = new THREE.AmbientLight(0xffffff, 50);
 scene.add(light);
 const directionLight = new THREE.DirectionalLight(0xffffff, 1);
 directionLight.position.set(50, 50, 50);
@@ -44,49 +45,177 @@ plane.rotation.x = THREE.MathUtils.degToRad(90);
 scene.add(plane);
 
 //------------ Load environment -----------------
-let lastTreePos = [0, 0];
-let treePos = [];
+let treePos = [];     // Load Trees
+let groundObjPos = [];    //Load Ground Objects
 
 let ranPosX = THREE.MathUtils.randInt(-50, 35);
 let ranPosZ = THREE.MathUtils.randInt(-50, 35);
 treePos.push([ranPosX, ranPosZ]);
-loadBirchTree1(ranPosX, ranPosZ);
-for(let i = 0; i < 4;){
-  ranPosX = THREE.MathUtils.randInt(-50, 35);
-  ranPosZ = THREE.MathUtils.randInt(-50, 35);
-  let closesTree = -1;
-  for(let t of treePos){
-    let disX = ranPosX - t[0];
-    let disZ = ranPosZ - t[1];
-    let treeDistance = Math.sqrt((disX * disX) + (disZ * disZ));
-    if(treeDistance < closesTree || closesTree === -1){
-      closesTree = treeDistance;
+loadTrees(treeObjects[0][1], treeObjects[0][0], ranPosX, ranPosZ);
+
+let ranPosXG = THREE.MathUtils.randInt(-50, 35);
+let ranPosZG = THREE.MathUtils.randInt(-50, 35);
+groundObjPos.push([ranPosXG, ranPosZG]);
+loadGroundObj(treeObjects[0][1], treeObjects[0][0], ranPosX, ranPosZ);
+
+
+function placeAllTrees(){
+  for(let i = 0; i < treeObjects.length; i++){
+    let objURL = treeObjects[i][0];
+    let mtlURL = treeObjects[i][1];
+
+    let count = 0;
+    let attempt = 0;
+    let maxAttempt = 200;
+
+    while(count < 2 && attempt < maxAttempt){
+      attempt ++;
+      ranPosX = THREE.MathUtils.randInt(-50, 35);
+      ranPosZ = THREE.MathUtils.randInt(-50, 35);
+      let closesTree = -1;
+
+      for(let t of treePos){
+        let disX = ranPosX - t[0];
+        let disZ = ranPosZ - t[1];
+        let treeDistance = Math.sqrt((disX * disX) + (disZ * disZ));
+        if(treeDistance < closesTree || closesTree === -1){
+          closesTree = treeDistance;
+        }
+      }
+
+      if(closesTree >= 30){
+        treePos.push([ranPosX, ranPosZ]);
+        loadTrees(mtlURL, objURL, ranPosX, ranPosZ);
+        count++;
+      }
     }
-    //console.log(t);
+    if(attempt >= maxAttempt){
+      console.log('too many attempts');
+    }
   }
-
-
-  if(closesTree >= 30){
-    console.log(closesTree);
-    treePos.push([ranPosX, ranPosZ]);
-    loadBirchTree1(ranPosX, ranPosZ);
-    lastTreePos = [ranPosX, ranPosZ];
-    i++;
-  }
-
 }
 
+function placeAllGroundObj(){
+  for(let i = 0; i < groundObjects.length; i++){
+    let objURL = groundObjects[i][0];
+    let mtlURL = groundObjects[i][1];
+
+    let count = 0;
+    let attempt = 0;
+    let maxAttempt = 200;
+
+    while(count < 2 && attempt < maxAttempt){
+      attempt ++;
+      ranPosXG = THREE.MathUtils.randInt(-50, 35);
+      ranPosZG = THREE.MathUtils.randInt(-50, 35);
+      let closesGObj = -1;
+
+      for(let t of groundObjPos){
+        let disXG = ranPosXG - t[0];
+        let disZG = ranPosZG - t[1];
+        let groundDistance = Math.sqrt((disXG * disXG) + (disZG * disZG));
+        if(groundDistance < closesGObj || closesGObj === -1){
+          closesGObj = groundDistance;
+        }
+      }
+
+      if(closesGObj >= 30){
+        groundObjPos.push([ranPosXG, ranPosZG]);
+        loadGroundObj(mtlURL, objURL, ranPosXG, ranPosZG);
+        count++;
+      }
+    }
+    if(attempt >= maxAttempt){
+      console.log('too many attempts');
+    }
+  }
+}
+
+
+// ---------- Character Movement -----------
+// ---------Load Character -----------
+const GLTFloader = new GLTFLoader();
+const monkURL = '/assets/Monk.gltf';
+let monkGLTF;
+let modelLoaded;
+
+function loadMonk(){
+    GLTFloader.load(
+        monkURL, 
+        function(gltf){
+            modelLoaded = false;
+            monkGLTF = gltf.scene;
+            monkGLTF.rotation.y = THREE.MathUtils.degToRad(180);
+
+            // --------GLTF Animations -----------
+            console.log(gltf.animations);
+            // Mixer is a built-in class from the Three.js library that controls 
+            // the playback of animations
+            mixer = new THREE.AnimationMixer(monkGLTF);
+
+            scene.add(monkGLTF);
+            modelLoaded = true;
+        }
+    )
+}
+
+// -------Make KeyPressed Function ---------
+const keys = {};
+let characterSpeed = 0.05;
+
+window.addEventListener('keydown',
+  function(event){    // access property
+    const key = event.key.toLowerCase();
+    keys[key] = true;     // Ex: keys['w'] = true when w/W is pressed
+  }
+);
+
+window.addEventListener('keyup', 
+  function(event){
+    const key = event.key.toLowerCase();
+    keys[key] = false;     // Ex: keys['w'] = false when w/W is relesed
+  }
+);
+
+
+
+
+
+
+// ---------Function Declare Center ---------
 loadMonk();
-
-
-
-
+placeAllTrees();
+placeAllGroundObj();
 
 
 
 function animate(){       // draw()
   requestAnimationFrame(animate);
   controls.update();
+
+  // -------- Character Controls --------
+  if(keys['shift'] === true){
+    characterSpeed = 0.10;
+  }
+  else{
+    characterSpeed = 0.05;
+  }
+  if(keys['w'] === true){  // Move foward
+    monkGLTF.rotation.y = THREE.MathUtils.degToRad(180);
+    monkGLTF.position.z -= characterSpeed;
+  }
+  if(keys['s'] === true){
+    monkGLTF.rotation.y = THREE.MathUtils.degToRad(0);
+    monkGLTF.position.z += characterSpeed;
+  }
+  if(keys['a'] === true){
+    monkGLTF.rotation.y = THREE.MathUtils.degToRad(270);
+    monkGLTF.position.x -= characterSpeed;
+  }
+  if(keys['d'] === true){
+    monkGLTF.rotation.y = THREE.MathUtils.degToRad(90);
+    monkGLTF.position.x += characterSpeed;
+  }
 
   
   renderer.render(scene, camera);
