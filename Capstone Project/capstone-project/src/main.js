@@ -7,6 +7,7 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { loadTrees, treeObjects, groundObjects, loadGroundObj } from './Objects/LoadObject';
+import { deltaTime } from 'three/src/nodes/TSL.js';
 
 
 // ----------Set up-----------
@@ -138,6 +139,9 @@ const GLTFloader = new GLTFLoader();
 const monkURL = '/assets/Monk.gltf';
 let monkGLTF;
 let modelLoaded;
+let mixer;
+let idle, walk, run, roll;
+let currentAction;
 
 function loadMonk(){
     GLTFloader.load(
@@ -147,16 +151,36 @@ function loadMonk(){
             monkGLTF = gltf.scene;
             monkGLTF.rotation.y = THREE.MathUtils.degToRad(180);
 
+            scene.add(monkGLTF);
+
             // --------GLTF Animations -----------
             console.log(gltf.animations);
             // Mixer is a built-in class from the Three.js library that controls 
             // the playback of animations
             mixer = new THREE.AnimationMixer(monkGLTF);
 
-            scene.add(monkGLTF);
+            // Animation library:
+            idle = mixer.clipAction(gltf.animations[3]);
+            walk = mixer.clipAction(gltf.animations[10]);
+            run = mixer.clipAction(gltf.animations[9]);
+            roll = mixer.clipAction(gltf.animations[8]);
+
+            idle.play();
+
+            currentAction = idle;
             modelLoaded = true;
         }
     )
+}
+
+// -------Switch Action ------
+
+function switchAction(newAction){
+  if(currentAction !== newAction){
+    currentAction.fadeOut(0.2);
+    newAction.reset().fadeIn(0.2).play();
+    currentAction = newAction;
+  }
 }
 
 // -------Make KeyPressed Function ---------
@@ -187,34 +211,78 @@ loadMonk();
 placeAllTrees();
 placeAllGroundObj();
 
-
+const clock = new THREE.Clock();
 
 function animate(){       // draw()
   requestAnimationFrame(animate);
   controls.update();
 
+  // Update Animation
+  const timeDelta = clock.getDelta();
+  if(mixer){
+    mixer.update(timeDelta);
+  }
+
+
+  let moved = false;   // control animations
+
   // -------- Character Controls --------
-  if(keys['shift'] === true){
-    characterSpeed = 0.10;
-  }
-  else{
-    characterSpeed = 0.05;
-  }
-  if(keys['w'] === true){  // Move foward
-    monkGLTF.rotation.y = THREE.MathUtils.degToRad(180);
-    monkGLTF.position.z -= characterSpeed;
-  }
-  if(keys['s'] === true){
-    monkGLTF.rotation.y = THREE.MathUtils.degToRad(0);
-    monkGLTF.position.z += characterSpeed;
-  }
-  if(keys['a'] === true){
-    monkGLTF.rotation.y = THREE.MathUtils.degToRad(270);
-    monkGLTF.position.x -= characterSpeed;
-  }
-  if(keys['d'] === true){
-    monkGLTF.rotation.y = THREE.MathUtils.degToRad(90);
-    monkGLTF.position.x += characterSpeed;
+  if(modelLoaded === true){
+    if(keys['shift'] === true){
+      characterSpeed = 0.10;
+    }
+    else{
+      characterSpeed = 0.05;
+    }
+    if(keys['w'] === true){  // Move foward
+      monkGLTF.rotation.y = THREE.MathUtils.degToRad(180);
+      monkGLTF.position.z -= characterSpeed;
+      moved = true;
+    }
+    if(keys['s'] === true){
+      monkGLTF.rotation.y = THREE.MathUtils.degToRad(0);
+      monkGLTF.position.z += characterSpeed;
+      moved = true;
+    }
+    if(keys['a'] === true){
+      monkGLTF.rotation.y = THREE.MathUtils.degToRad(270);
+      monkGLTF.position.x -= characterSpeed;
+      moved = true;
+    }
+    if(keys['d'] === true){
+      monkGLTF.rotation.y = THREE.MathUtils.degToRad(90);
+      monkGLTF.position.x += characterSpeed;
+      moved = true;
+    }
+    // if(keys['w'] && keys['a'] === true){
+    //   monkGLTF.rotation.y = THREE.MathUtils.degToRad(210);
+    //   monkGLTF.position.z -= characterSpeed;
+    //   moved = true;
+    // }
+    // if(keys['s'] && keys['d'] === true){
+    //   monkGLTF.rotation.y = THREE.MathUtils.degToRad(60);
+    //   monkGLTF.position.z -= characterSpeed;
+    //   moved = true;
+    // }
+    // if(keys['w'] && keys['d'] === true){
+    //   monkGLTF.rotation.y = THREE.MathUtils.degToRad(120);
+    //   monkGLTF.position.z -= characterSpeed;
+    //   moved = true;
+    // }
+
+
+
+    if(moved === true){
+      if(keys['shift'] === true){
+        switchAction(run);
+      }
+      else{
+        switchAction(walk);
+      }
+    }
+    else{
+      switchAction(idle);
+    }
   }
 
   
