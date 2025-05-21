@@ -7,7 +7,7 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { loadTrees, treeObjects, groundObjects, loadGroundObj } from './Objects/LoadObject';
-import { deltaTime } from 'three/src/nodes/TSL.js';
+
 
 
 // ----------Set up-----------
@@ -15,8 +15,11 @@ const width = window.innerWidth;
 const height = window.innerHeight;
 export const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(45, width / height, 1, 2000);  
-camera.position.set(100, 100, 100);
+camera.position.set(50, 50, 50);
 // fov = zoom in or out      aspect = rendering space    near & far = rendering limitations
+
+const cameraHelper = new THREE.CameraHelper(camera);
+scene.add(cameraHelper);
 
 scene.background = new THREE.Color(0x87ceeb);
 
@@ -25,7 +28,6 @@ const renderer = new THREE.WebGLRenderer();
 renderer.setSize(width, height);
 const canvas = renderer.domElement    // HTML
 document.body.appendChild(canvas);
-
 const controls = new OrbitControls(camera, canvas);
 
 
@@ -215,8 +217,29 @@ const clock = new THREE.Clock();
 
 function animate(){       // draw()
   requestAnimationFrame(animate);
-  controls.update();
 
+  // Third Person Camera
+  if(modelLoaded === true){
+    let characterFacing = THREE.MathUtils.radToDeg(monkGLTF.rotation.y);
+    console.log(THREE.MathUtils.radToDeg(monkGLTF.rotation.y));
+
+    let cameraX = monkGLTF.position.x;
+    let cameraY = monkGLTF.position.y + 10;
+    let cameraZ = monkGLTF.position.z + 15;
+    
+    const cameraOffSet = new THREE.Vector3(cameraX, cameraY, cameraZ);
+
+    if(characterFacing === 0){
+      cameraX = camera.rotation.x = THREE.MathUtils.degToRad(370);
+    }
+
+    camera.position.set(cameraX, cameraY, cameraZ);
+
+    camera.lookAt(monkGLTF.position);
+  }
+
+
+  //controls.update();
   // Update Animation
   const timeDelta = clock.getDelta();
   if(mixer){
