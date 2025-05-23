@@ -220,34 +220,15 @@ function animate(){       // draw()
 
   // Third Person Camera
   if(modelLoaded === true){
-    let characterFacing = THREE.MathUtils.radToDeg(monkGLTF.rotation.y);
 
-    let newVec = new THREE.Vector3();
-    let testPos = monkGLTF.getWorldPosition(newVec);
-    console.log(testPos);
-    console.log(THREE.MathUtils.radToDeg(monkGLTF.rotation.y));
+    let cameraOffset = new THREE.Vector3(0, 6, -15);
+    let camVelOffset = new THREE.Vector3(0, 1, 0);
+    cameraOffset.applyAxisAngle(camVelOffset, monkGLTF.rotation.y);
 
-    let cameraX = monkGLTF.position.x;
-    let cameraY = monkGLTF.position.y + 6;
-    let cameraZ = monkGLTF.position.z + 15;
-    
-    const cameraOffSet = new THREE.Vector3(cameraX, cameraY, cameraZ);
+    let camPos = monkGLTF.position.clone().add(cameraOffset);
+    console.log(camPos);
 
-    if(characterFacing === 0){
-      cameraX = camera.rotation.x = THREE.MathUtils.degToRad(370);
-    }
-    if(characterFacing === 270){
-      cameraZ = monkGLTF.position.z;
-      cameraX = monkGLTF.position.x + 15;
-      //cameraX = camera.rotation.x = THREE.MathUtils.degToRad(370);
-    }
-    if(characterFacing === 90){
-      cameraZ = monkGLTF.position.z;
-      cameraX = monkGLTF.position.x - 15;
-      //cameraX = camera.rotation.x = THREE.MathUtils.degToRad(370);
-    }
-
-    camera.position.set(cameraX, cameraY, cameraZ);
+    //camera.position.set(camPos, cameraYVec, cameraZ);
 
     camera.lookAt(monkGLTF.position);
   }
@@ -271,12 +252,22 @@ function animate(){       // draw()
     else{
       characterSpeed = 0.05;
     }
+
+    let vel = new THREE.Vector3(0, 0, 1);
+    let vecFowardOffset = new THREE.Vector3(0, 1, 0);
+    vel.applyAxisAngle(vecFowardOffset, monkGLTF.rotation.y);
+
     if(keys['w'] === true){  // Move foward
-      monkGLTF.position.z -= characterSpeed;
+      monkGLTF.position.add(vel);
       moved = true;
     }
+
+    let backVel = new THREE.Vector3(0, 0, -1);
+    let vecBackOffset = new THREE.Vector3(0, 1, 0);
+    backVel.applyAxisAngle(vecBackOffset, monkGLTF.rotation.y);
+
     if(keys['s'] === true){
-      monkGLTF.position.z += characterSpeed;
+      monkGLTF.position.add(backVel);
       moved = true;
     }
     if(keys['a'] === true){
