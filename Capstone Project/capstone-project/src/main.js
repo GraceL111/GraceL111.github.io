@@ -221,16 +221,30 @@ function animate(){       // draw()
   // Third Person Camera
   if(modelLoaded === true){
     let characterFacing = THREE.MathUtils.radToDeg(monkGLTF.rotation.y);
+
+    let newVec = new THREE.Vector3();
+    let testPos = monkGLTF.getWorldPosition(newVec);
+    console.log(testPos);
     console.log(THREE.MathUtils.radToDeg(monkGLTF.rotation.y));
 
     let cameraX = monkGLTF.position.x;
-    let cameraY = monkGLTF.position.y + 10;
+    let cameraY = monkGLTF.position.y + 6;
     let cameraZ = monkGLTF.position.z + 15;
     
     const cameraOffSet = new THREE.Vector3(cameraX, cameraY, cameraZ);
 
     if(characterFacing === 0){
       cameraX = camera.rotation.x = THREE.MathUtils.degToRad(370);
+    }
+    if(characterFacing === 270){
+      cameraZ = monkGLTF.position.z;
+      cameraX = monkGLTF.position.x + 15;
+      //cameraX = camera.rotation.x = THREE.MathUtils.degToRad(370);
+    }
+    if(characterFacing === 90){
+      cameraZ = monkGLTF.position.z;
+      cameraX = monkGLTF.position.x - 15;
+      //cameraX = camera.rotation.x = THREE.MathUtils.degToRad(370);
     }
 
     camera.position.set(cameraX, cameraY, cameraZ);
@@ -258,40 +272,21 @@ function animate(){       // draw()
       characterSpeed = 0.05;
     }
     if(keys['w'] === true){  // Move foward
-      monkGLTF.rotation.y = THREE.MathUtils.degToRad(180);
       monkGLTF.position.z -= characterSpeed;
       moved = true;
     }
     if(keys['s'] === true){
-      monkGLTF.rotation.y = THREE.MathUtils.degToRad(0);
       monkGLTF.position.z += characterSpeed;
       moved = true;
     }
     if(keys['a'] === true){
-      monkGLTF.rotation.y = THREE.MathUtils.degToRad(270);
-      monkGLTF.position.x -= characterSpeed;
+      monkGLTF.rotation.y += 0.05;
       moved = true;
     }
     if(keys['d'] === true){
-      monkGLTF.rotation.y = THREE.MathUtils.degToRad(90);
-      monkGLTF.position.x += characterSpeed;
+      monkGLTF.rotation.y -= 0.05;
       moved = true;
     }
-    // if(keys['w'] && keys['a'] === true){
-    //   monkGLTF.rotation.y = THREE.MathUtils.degToRad(210);
-    //   monkGLTF.position.z -= characterSpeed;
-    //   moved = true;
-    // }
-    // if(keys['s'] && keys['d'] === true){
-    //   monkGLTF.rotation.y = THREE.MathUtils.degToRad(60);
-    //   monkGLTF.position.z -= characterSpeed;
-    //   moved = true;
-    // }
-    // if(keys['w'] && keys['d'] === true){
-    //   monkGLTF.rotation.y = THREE.MathUtils.degToRad(120);
-    //   monkGLTF.position.z -= characterSpeed;
-    //   moved = true;
-    // }
 
 
 
