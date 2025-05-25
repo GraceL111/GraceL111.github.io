@@ -7,7 +7,7 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { loadTrees, treeObjects, groundObjects, loadGroundObj } from './Objects/LoadObject';
-
+import { Monsters } from './Objects/monsters';
 
 
 // ----------Set up-----------
@@ -32,7 +32,7 @@ const controls = new OrbitControls(camera, canvas);
 
 
 // --------Light -----------
-const light = new THREE.AmbientLight(0xffffff, 50);
+const light = new THREE.AmbientLight(0xffffff, 40);
 scene.add(light);
 const directionLight = new THREE.DirectionalLight(0xffffff, 1);
 directionLight.position.set(50, 50, 50);
@@ -138,7 +138,7 @@ function placeAllGroundObj(){
 // ---------- Character Movement -----------
 // ---------Load Character -----------
 const GLTFloader = new GLTFLoader();
-const monkURL = '/assets/Monk.gltf';
+const monkURL = '/assets/Rogue.gltf';
 let monkGLTF;
 let modelLoaded;
 let mixer;
@@ -149,23 +149,22 @@ function loadMonk(){
     GLTFloader.load(
         monkURL, 
         function(gltf){
-            modelLoaded = false;
+            modelLoaded = false;   // preload()
             monkGLTF = gltf.scene;
             monkGLTF.rotation.y = THREE.MathUtils.degToRad(180);
 
             scene.add(monkGLTF);
 
             // --------GLTF Animations -----------
-            console.log(gltf.animations);
             // Mixer is a built-in class from the Three.js library that controls 
             // the playback of animations
             mixer = new THREE.AnimationMixer(monkGLTF);
-
+            console.log(gltf.animations);
             // Animation library:
-            idle = mixer.clipAction(gltf.animations[3]);
-            walk = mixer.clipAction(gltf.animations[10]);
-            run = mixer.clipAction(gltf.animations[9]);
-            roll = mixer.clipAction(gltf.animations[8]);
+            idle = mixer.clipAction(gltf.animations[4]);
+            walk = mixer.clipAction(gltf.animations[11]);
+            run = mixer.clipAction(gltf.animations[10]);
+            roll = mixer.clipAction(gltf.animations[9]);
 
             idle.play();
 
@@ -187,7 +186,6 @@ function switchAction(newAction){
 
 // -------Make KeyPressed Function ---------
 const keys = {};
-let characterSpeed = 0.05;
 
 window.addEventListener('keydown',
   function(event){    // access property
@@ -203,6 +201,87 @@ window.addEventListener('keyup',
   }
 );
 
+function thirdPersonCam(){
+    if(modelLoaded === true){
+
+    let cameraYOffset = new THREE.Vector3(-2, 6, -15);
+    let camVelOffset = new THREE.Vector3(0, 1, 0);
+    cameraYOffset.applyAxisAngle(camVelOffset, monkGLTF.rotation.y);
+
+    let camPos = monkGLTF.position.clone().add(cameraYOffset);
+    camera.position.set(camPos.x, camPos.y, camPos.z);
+
+    let sideOffSet = new THREE.Vector3(-2, 3, 0);
+    sideOffSet.applyAxisAngle(camVelOffset, monkGLTF.rotation.y);
+    let shoulderTarget = monkGLTF.position.clone().add(sideOffSet);
+    
+    camera.lookAt(shoulderTarget);
+  }
+}
+
+function characterControl(){
+    let moved = false;   // control animations
+
+  let vel = new THREE.Vector3(0, 0, 0.1);
+
+  if(modelLoaded === true){
+    if(keys['shift'] === true){
+      vel.z = 0.25;
+    }
+    else{
+      vel.z = 0.1;
+    }
+
+    let vecFowardOffset = new THREE.Vector3(0, 1, 0);
+    vel.applyAxisAngle(vecFowardOffset, monkGLTF.rotation.y);
+
+    if(keys['w'] === true){  // Move foward
+      //console.log(vel);
+      monkGLTF.position.add(vel);
+      moved = true;
+    }
+
+    let backVel = new THREE.Vector3(0, 0, -0.1);
+    let vecBackOffset = new THREE.Vector3(0, 1, 0);
+    backVel.applyAxisAngle(vecBackOffset, monkGLTF.rotation.y);
+
+    if(keys['s'] === true){      // Move backwards
+      monkGLTF.position.add(backVel);
+      moved = true;
+    }
+    if(keys['a'] === true){    // rotate left
+      monkGLTF.rotation.y += 0.05;
+      moved = true;
+    }
+    if(keys['d'] === true){    // rotate right
+      monkGLTF.rotation.y -= 0.05;
+      moved = true;
+    }
+
+
+
+
+    if(moved === true){
+      if(keys['shift'] === true){
+        if(!keys['s']){
+          switchAction(run);
+        }
+      }
+      else{
+        switchAction(walk);
+      }
+    }
+    else{
+      switchAction(idle);
+    }
+  }
+}
+
+// ----------- Add Monsters ----------
+const monsters = new Monsters();
+for(let i = 0; i < 2; i++){
+  monsters.load();
+}
 
 
 
@@ -219,80 +298,20 @@ function animate(){       // draw()
   requestAnimationFrame(animate);
 
   // Third Person Camera
-  if(modelLoaded === true){
-
-    let cameraOffset = new THREE.Vector3(0, 6, -15);
-    let camVelOffset = new THREE.Vector3(0, 1, 0);
-    cameraOffset.applyAxisAngle(camVelOffset, monkGLTF.rotation.y);
-
-    let camPos = monkGLTF.position.clone().add(cameraOffset);
-    console.log(camPos);
-
-    //camera.position.set(camPos, cameraYVec, cameraZ);
-
-    camera.lookAt(monkGLTF.position);
-  }
+  thirdPersonCam();
 
 
-  //controls.update();
   // Update Animation
   const timeDelta = clock.getDelta();
   if(mixer){
     mixer.update(timeDelta);
   }
 
-
-  let moved = false;   // control animations
-
-  // -------- Character Controls --------
-  if(modelLoaded === true){
-    if(keys['shift'] === true){
-      characterSpeed = 0.10;
-    }
-    else{
-      characterSpeed = 0.05;
-    }
-
-    let vel = new THREE.Vector3(0, 0, 1);
-    let vecFowardOffset = new THREE.Vector3(0, 1, 0);
-    vel.applyAxisAngle(vecFowardOffset, monkGLTF.rotation.y);
-
-    if(keys['w'] === true){  // Move foward
-      monkGLTF.position.add(vel);
-      moved = true;
-    }
-
-    let backVel = new THREE.Vector3(0, 0, -1);
-    let vecBackOffset = new THREE.Vector3(0, 1, 0);
-    backVel.applyAxisAngle(vecBackOffset, monkGLTF.rotation.y);
-
-    if(keys['s'] === true){
-      monkGLTF.position.add(backVel);
-      moved = true;
-    }
-    if(keys['a'] === true){
-      monkGLTF.rotation.y += 0.05;
-      moved = true;
-    }
-    if(keys['d'] === true){
-      monkGLTF.rotation.y -= 0.05;
-      moved = true;
-    }
+  // user control
+  characterControl();
 
 
 
-    if(moved === true){
-      if(keys['shift'] === true){
-        switchAction(run);
-      }
-      else{
-        switchAction(walk);
-      }
-    }
-    else{
-      switchAction(idle);
-    }
-  }
 
   
   renderer.render(scene, camera);
