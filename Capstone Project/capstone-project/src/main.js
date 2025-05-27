@@ -7,7 +7,7 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { loadTrees, treeObjects, groundObjects, loadGroundObj } from './Objects/LoadObject';
-import { Monsters } from './Objects/monsters';
+import { Monsters, monstersList, monstersAnimation } from './Objects/monsters';
 
 
 // ----------Set up-----------
@@ -235,7 +235,9 @@ function characterControl(){
     let vecFowardOffset = new THREE.Vector3(0, 1, 0);
     vel.applyAxisAngle(vecFowardOffset, monkGLTF.rotation.y);
 
-    if(keys['w'] === true){  // Move foward
+    let nextPos = monkGLTF.position.clone().add(vel);
+
+    if(keys['w'] === true && isInBound(nextPos)){  // Move foward
       //console.log(vel);
       monkGLTF.position.add(vel);
       moved = true;
@@ -245,7 +247,7 @@ function characterControl(){
     let vecBackOffset = new THREE.Vector3(0, 1, 0);
     backVel.applyAxisAngle(vecBackOffset, monkGLTF.rotation.y);
 
-    if(keys['s'] === true){      // Move backwards
+    if(keys['s'] === true && isInBound(nextPos)){      // Move backwards
       monkGLTF.position.add(backVel);
       moved = true;
     }
@@ -277,11 +279,34 @@ function characterControl(){
   }
 }
 
-// ----------- Add Monsters ----------
+function isInBound(pos){
+  if(pos.x >= 50 || pos.x <= -50 || pos.z >= 50 || pos.z <= -50){
+    return false;
+  }
+  else{
+    return true;
+  }
+
+}
+
+// --------- Attack system ---------
+const raycaster = new THREE.Raycaster();
+const pointer = new THREE.Vector2();
+
+function attack(){
+
+}
+
+// -----------  Monsters Section----------
 const monsters = new Monsters();
+let loaded = false;
 for(let i = 0; i < 2; i++){
   monsters.load();
 }
+loaded = true;
+
+
+
 
 
 
@@ -307,8 +332,18 @@ function animate(){       // draw()
     mixer.update(timeDelta);
   }
 
+  // monster animation
+  for(let a of monstersAnimation){
+    a.mixer.update(timeDelta);
+  }
+
   // user control
   characterControl();
+
+  //monsters
+  if(loaded = true){
+    monsters.update();
+  }
 
 
 
