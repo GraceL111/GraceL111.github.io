@@ -7,7 +7,7 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { loadTrees, treeObjects, groundObjects, loadGroundObj } from './Objects/LoadObject';
-import { Monsters, monstersList, monstersAnimation } from './Objects/monsters';
+import { Monsters, monstersObjects, monstersAnimation } from './Objects/monsters';
 
 
 // ----------Set up-----------
@@ -184,7 +184,7 @@ function switchAction(newAction){
   }
 }
 
-// -------Make KeyPressed Function ---------
+// -------Make KeyPressed Listerner ---------
 const keys = {};
 
 window.addEventListener('keydown',
@@ -200,6 +200,19 @@ window.addEventListener('keyup',
     keys[key] = false;     // Ex: keys['w'] = false when w/W is relesed
   }
 );
+
+//  ----- Add mousePressed Listener -------
+window.addEventListener('mousedown', 
+  function(event){
+    attack();
+  }
+);
+
+window.addEventListener('mouseup', 
+  function(event){
+  }
+);
+
 
 function thirdPersonCam(){
     if(modelLoaded === true){
@@ -290,12 +303,36 @@ function isInBound(pos){
 }
 
 // --------- Attack system ---------
-const raycaster = new THREE.Raycaster();
-const pointer = new THREE.Vector2();
+const raycaster = new THREE.Raycaster();   // used for mouse picking
+const pointer = new THREE.Vector2(0, 0); 
+const damageList = [];
+
+function countHit(monster, hit){
+  let found;
+  for(let d = 0; d < damageList.length; d++){
+    found = false;
+    if(damageList[d][0] === monster){
+      damageList[d][1] += hit;
+      found = true;
+      break;
+    }
+  }
+  if(!found){
+    damageList.push([monster, hit]);
+  }
+  console.log(damageList);
+}
 
 function attack(){
+  raycaster.setFromCamera(pointer, camera);
+  const intersects = raycaster.intersectObjects(monstersObjects);
+  if(intersects.length > 0){
+    countHit(intersects[0].object.name, 1);
+  }
 
 }
+
+
 
 // -----------  Monsters Section----------
 const monsters = new Monsters();
@@ -304,6 +341,11 @@ for(let i = 0; i < 2; i++){
   monsters.load();
 }
 loaded = true;
+
+
+function playMonsterDeath(monster){
+
+}
 
 
 

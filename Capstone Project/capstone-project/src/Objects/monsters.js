@@ -17,7 +17,7 @@ export const monstersList = [
     '/assets/monsters/Orc.gltf',
 ]
 
-const monstersObjects = [];
+export const monstersObjects = [];
 export const monstersAnimation = [];
 
 export class Monsters{
