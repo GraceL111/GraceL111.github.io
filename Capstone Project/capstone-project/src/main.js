@@ -7,7 +7,7 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { loadTrees, treeObjects, groundObjects, loadGroundObj } from './Objects/LoadObject';
-import { Monsters, monstersObjects, monstersAnimation } from './Objects/monsters';
+import { Monsters, monstersObjects, monstersAnimation, monsterName } from './Objects/monsters';
 
 
 // ----------Set up-----------
@@ -307,29 +307,37 @@ const raycaster = new THREE.Raycaster();   // used for mouse picking
 const pointer = new THREE.Vector2(0, 0); 
 const damageList = [];
 
-function countHit(monster, hit){
-  let found;
-  for(let d = 0; d < damageList.length; d++){
-    found = false;
-    if(damageList[d][0] === monster){
-      damageList[d][1] += hit;
-      found = true;
-      break;
-    }
-  }
-  if(!found){
-    damageList.push([monster, hit]);
-  }
-  console.log(damageList);
-}
 
 function attack(){
   raycaster.setFromCamera(pointer, camera);
   const intersects = raycaster.intersectObjects(monstersObjects);
   if(intersects.length > 0){
-    countHit(intersects[0].object.name, 1);
+    countHit(intersects[0].object.name, 1, intersects[0].object);
+  }
+}
+
+function countHit(monster, hit, monsterObj){
+  let found;
+  for(let d = 0; d < damageList.length; d++){
+    found = false;
+    if(damageList[d][0] === monster){
+      if(damageList[d][1] >= 5){
+        damageList[d][1] = 0;
+        playMonsterDeath(monsterObj);
+        break;
+      }
+      else{
+        damageList[d][1] += hit;
+        found = true;
+        break;
+      }
+    }
+  }
+  if(!found){
+    damageList.push([monster, hit]);
   }
 
+  console.log(damageList);
 }
 
 
@@ -344,6 +352,11 @@ loaded = true;
 
 
 function playMonsterDeath(monster){
+  console.log(monster);
+  // let i = monstersObjects.indexOf(monster);
+  // const mixer = new THREE.AnimationMixer(monster);
+  // console.log(monstersAnimation);
+  // mixer.clipAction(monstersAnimation[i].death).play();
 
 }
 

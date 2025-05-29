@@ -19,6 +19,7 @@ export const monstersList = [
 
 export const monstersObjects = [];
 export const monstersAnimation = [];
+export const monsterName = [];
 
 export class Monsters{
     // constructor
@@ -51,7 +52,8 @@ export class Monsters{
                             death: mixer.clipAction(gltf.animations[0]),
                             hit: mixer.clipAction(gltf.animations[2]),
                     };
-
+                    monsterName.push(monster.children[0], children[0].name);
+                    console.log(monster.children[0], children[0].name);
                     monstersAnimation.push(animations);
                     monstersObjects.push(monster);
                     animations.walk.play();
