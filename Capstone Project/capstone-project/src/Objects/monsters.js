@@ -44,16 +44,20 @@ export class Monsters{
                     monster.position.set(ranNumX, 0, ranNumZ);
                     // -------get animations-------
                     const mixer = new THREE.AnimationMixer(monster);
+                    // get obj name
+                    let name = url.split('/').pop().replace('.gltf', '');
+                    monster.name = name;
 
                     let animations ={
                             mixer: mixer,
+                            name: name,
                             walk: mixer.clipAction(gltf.animations[10]),
                             attack: mixer.clipAction(gltf.animations[8]),
                             death: mixer.clipAction(gltf.animations[0]),
                             hit: mixer.clipAction(gltf.animations[2]),
                     };
-                    monsterName.push(monster.children[0], children[0].name);
-                    console.log(monster.children[0], children[0].name);
+                    
+                    console.log(animations);
                     monstersAnimation.push(animations);
                     monstersObjects.push(monster);
                     animations.walk.play();

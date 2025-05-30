@@ -7,7 +7,7 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { loadTrees, treeObjects, groundObjects, loadGroundObj } from './Objects/LoadObject';
-import { Monsters, monstersObjects, monstersAnimation, monsterName } from './Objects/monsters';
+import { Monsters, monstersObjects, monstersAnimation } from './Objects/monsters';
 
 
 // ----------Set up-----------
@@ -317,22 +317,21 @@ function attack(){
 }
 
 function countHit(monster, hit, monsterObj){
-  let found;
+  let found =false;
   for(let d = 0; d < damageList.length; d++){
-    found = false;
     if(damageList[d][0] === monster){
       if(damageList[d][1] >= 5){
         damageList[d][1] = 0;
         playMonsterDeath(monsterObj);
-        break;
       }
       else{
         damageList[d][1] += hit;
-        found = true;
-        break;
       }
+      found = true;
+      break;
     }
   }
+
   if(!found){
     damageList.push([monster, hit]);
   }
@@ -345,17 +344,22 @@ function countHit(monster, hit, monsterObj){
 // -----------  Monsters Section----------
 const monsters = new Monsters();
 let loaded = false;
-for(let i = 0; i < 2; i++){
-  monsters.load();
-}
+monsters.load();
 loaded = true;
 
 
 function playMonsterDeath(monster){
-  console.log(monster);
-  // let i = monstersObjects.indexOf(monster);
-  // const mixer = new THREE.AnimationMixer(monster);
-  // console.log(monstersAnimation);
+  const mixer = new THREE.AnimationMixer(monster);
+  let selectedMonster = monster.name;
+  console.log(monstersAnimation);
+  for(let i = 0; i < monstersAnimation.length; i++){
+    if(selectedMonster === monstersAnimation[i].name){
+      console.log(monstersAnimation[i]);
+      mixer.clipAction(monstersAnimation[i].death).play();
+      break;
+    }
+  }
+  console.log(monstersAnimation);
   // mixer.clipAction(monstersAnimation[i].death).play();
 
 }
