@@ -350,18 +350,19 @@ loaded = true;
 
 function playMonsterDeath(monster){
   const mixer = new THREE.AnimationMixer(monster);
+  console.log(monster);
   let selectedMonster = monster.name;
-  console.log(monstersAnimation);
   for(let i = 0; i < monstersAnimation.length; i++){
     if(selectedMonster === monstersAnimation[i].name){
-      console.log(monstersAnimation[i]);
-      mixer.clipAction(monstersAnimation[i].death).play();
-      break;
+      let deathAction = monstersAnimation[i].death;
+      monstersAnimation[i].walk.stop();
+      deathAction.reset();
+      deathAction.setLoop(THREE.LoopOnce);
+      deathAction.clampWhenFinished = true;
+      monstersObjects[i].userData.dead = true;
+      deathAction.play();
     }
   }
-  console.log(monstersAnimation);
-  // mixer.clipAction(monstersAnimation[i].death).play();
-
 }
 
 
@@ -400,7 +401,7 @@ function animate(){       // draw()
   characterControl();
 
   //monsters
-  if(loaded = true){
+  if(loaded === true){
     monsters.update();
   }
 

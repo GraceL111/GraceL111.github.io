@@ -44,9 +44,11 @@ export class Monsters{
                     monster.position.set(ranNumX, 0, ranNumZ);
                     // -------get animations-------
                     const mixer = new THREE.AnimationMixer(monster);
+
                     // get obj name
                     let name = url.split('/').pop().replace('.gltf', '');
                     monster.name = name;
+                    monster.userData.dead = false;
 
                     let animations ={
                             mixer: mixer,
@@ -57,9 +59,10 @@ export class Monsters{
                             hit: mixer.clipAction(gltf.animations[2]),
                     };
                     
-                    console.log(animations);
+                    console.log(monstersObjects);
                     monstersAnimation.push(animations);
                     monstersObjects.push(monster);
+
                     animations.walk.play();
                 }
             )
@@ -68,10 +71,12 @@ export class Monsters{
 
     update(){
         for (let obj of monstersObjects){
-            let velMonster = new THREE.Vector3(0, 0, 0.02);
-            let velMonsterOffset = new THREE.Vector3(0, 1, 0);
-            velMonster.applyAxisAngle(velMonsterOffset, obj.rotation.y);
-            obj.position.add(velMonster);
+            if(obj.userData.dead === false){
+                let velMonster = new THREE.Vector3(0, 0, 0.02);
+                let velMonsterOffset = new THREE.Vector3(0, 1, 0);
+                velMonster.applyAxisAngle(velMonsterOffset, obj.rotation.y);
+                obj.position.add(velMonster);
+            }
 
             // check for boundaries
             const bound = 100;
