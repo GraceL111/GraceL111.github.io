@@ -7,7 +7,7 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { loadTrees, treeObjects, groundObjects, loadGroundObj } from './Objects/LoadObject';
-import { Monsters, monstersObjects, monstersAnimation } from './Objects/monsters';
+import { Monsters, monstersObjects, monstersAnimation, monsterRandAng } from './Objects/monsters';
 
 
 // ----------Set up-----------
@@ -139,10 +139,10 @@ function placeAllGroundObj(){
 // ---------Load Character -----------
 const GLTFloader = new GLTFLoader();
 const monkURL = '/assets/Rogue.gltf';
-let monkGLTF;
+export let monkGLTF;
 let modelLoaded;
 let mixer;
-let idle, walk, run, roll;
+let idle, walk, run, roll, attacks, hit, death;
 let currentAction;
 
 function loadMonk(){
@@ -165,6 +165,10 @@ function loadMonk(){
             walk = mixer.clipAction(gltf.animations[11]);
             run = mixer.clipAction(gltf.animations[10]);
             roll = mixer.clipAction(gltf.animations[9]);
+            attacks = mixer.clipAction(gltf.animations[2]);
+            hit = mixer.clipAction(gltf.animations[7]);
+            death = mixer.clipAction(gltf.animations[3]);
+
 
             idle.play();
 
@@ -179,7 +183,7 @@ function loadMonk(){
 function switchAction(newAction){
   if(currentAction !== newAction){
     currentAction.fadeOut(0.2);
-    newAction.reset().fadeIn(0.2).play();
+    newAction.reset().fadeIn(0.5).play();
     currentAction = newAction;
   }
 }
@@ -204,6 +208,7 @@ window.addEventListener('keyup',
 //  ----- Add mousePressed Listener -------
 window.addEventListener('mousedown', 
   function(event){
+    switchAction(attacks);
     attack();
   }
 );
@@ -302,6 +307,62 @@ function isInBound(pos){
 
 }
 
+//----------- Monster Attack system -----------\
+
+
+function calcMonsterDist(){
+  if(modelLoaded === true){
+    for(let i = 0; i< monstersObjects.length; i++){
+      const monster = monstersObjects[i];
+      const anims = monstersAnimation[i];
+      let dis = monster.position.distanceTo(monkGLTF.position);
+      //console.log(monstersObjects[i].name + dis);
+
+      // turn to face player
+      if(dis < 15 && monstersObjects[i].userData.dead !== true){
+        let disX = monkGLTF.position.x - monster.position.x;
+        let disZ = monkGLTF.position.z - monster.position.z;
+        let targetAngle = Math.atan2(disX, disZ);
+        monster.rotation.y = THREE.MathUtils.lerp(monster.rotation.y, targetAngle, 1);   // smooth transition between 2 values (rotation y)
+
+        // Move towards
+        if(dis < 15 && monster.userData.state === 'walk'){
+          let velMonster = new THREE.Vector3(0, 0, 0.05);
+          let velMonsterOffset = new THREE.Vector3(0, 1, 0);
+          velMonster.applyAxisAngle(velMonsterOffset, monster.rotation.y);
+          monster.position.add(velMonster);
+        }
+
+        // if(monster.position.x <= -50 || monster.position.x >= 50 || 
+        //   monster.position.z <= -50 || monster.position.z >= 50){
+        //   monster.rotation.y += THREE.MathUtils.degToRad(180);
+        // }
+      }
+      if(dis > 15 && monstersObjects[i].userData.dead !== true){
+        monster.rotation.y = monsterRandAng[i];
+      }
+
+      // attack animation
+      if(dis < 3 && monster.userData.dead !== true && monster.userData.state !== 'attack'){
+        anims.walk.stop();
+        anims.attack.reset();
+        anims.attack.play();
+        monster.userData.state = 'attack';
+      }
+      else if(dis >= 3 && monster.userData.state !== 'walk'){
+        anims.attack.stop();
+        anims.walk.reset();
+        anims.walk.play();
+        monster.userData.state = 'walk';
+      }
+    }
+  }
+}
+
+
+
+
+
 // --------- Attack system ---------
 const raycaster = new THREE.Raycaster();   // used for mouse picking
 const pointer = new THREE.Vector2(0, 0); 
@@ -350,7 +411,6 @@ loaded = true;
 
 function playMonsterDeath(monster){
   const mixer = new THREE.AnimationMixer(monster);
-  console.log(monster);
   let selectedMonster = monster.name;
   for(let i = 0; i < monstersAnimation.length; i++){
     if(selectedMonster === monstersAnimation[i].name){
@@ -358,6 +418,7 @@ function playMonsterDeath(monster){
       monstersAnimation[i].walk.stop();
       deathAction.reset();
       deathAction.setLoop(THREE.LoopOnce);
+      monstersAnimation[i].attack.stop();
       deathAction.clampWhenFinished = true;
       monstersObjects[i].userData.dead = true;
       deathAction.play();
@@ -403,8 +464,8 @@ function animate(){       // draw()
   //monsters
   if(loaded === true){
     monsters.update();
+    calcMonsterDist();
   }
-
 
 
 

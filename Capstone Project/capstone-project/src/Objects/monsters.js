@@ -2,7 +2,7 @@
 
 import * as THREE from 'three';
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
-import { scene } from '../main.js'
+import { scene, monkGLTF } from '../main.js'
 
 export const monstersList = [
     '/assets/monsters/Birb.gltf',
@@ -20,11 +20,12 @@ export const monstersList = [
 export const monstersObjects = [];
 export const monstersAnimation = [];
 export const monsterName = [];
+export const monsterRandAng = [];
 
 export class Monsters{
     // constructor
     constructor(){
-
+        const self = this;
     }
 
     // methods
@@ -49,6 +50,11 @@ export class Monsters{
                     let name = url.split('/').pop().replace('.gltf', '');
                     monster.name = name;
                     monster.userData.dead = false;
+                    monster.userData.state = 'walk';
+
+                    // random angle for later use
+                    let randomAng = THREE.MathUtils.randFloat(0, 360);
+                    monsterRandAng.push(randomAng);
 
                     let animations ={
                             mixer: mixer,
@@ -64,6 +70,7 @@ export class Monsters{
                     monstersObjects.push(monster);
 
                     animations.walk.play();
+                    self.loaded = true;
                 }
             )
         }
@@ -71,20 +78,29 @@ export class Monsters{
 
     update(){
         for (let obj of monstersObjects){
-            if(obj.userData.dead === false){
-                let velMonster = new THREE.Vector3(0, 0, 0.02);
-                let velMonsterOffset = new THREE.Vector3(0, 1, 0);
-                velMonster.applyAxisAngle(velMonsterOffset, obj.rotation.y);
-                obj.position.add(velMonster);
-            }
+            
+            if(self.loaded === true){
+                const dist = obj.position.distanceTo(monkGLTF.position);
+                
+                // auto movement
+                if(dist >= 15 && obj.userData.dead === false){
+                    let velMonster = new THREE.Vector3(0, 0, 0.02);
+                    let velMonsterOffset = new THREE.Vector3(0, 1, 0);
+                    velMonster.applyAxisAngle(velMonsterOffset, obj.rotation.y);
 
-            // check for boundaries
-            const bound = 100;
-            if(obj.position.x <= -50 || obj.position.x >= 50 || 
-                obj.position.z <= -50 || obj.position.z >= 50){
-                    obj.rotation.y += THREE.MathUtils.degToRad(180);
+                    //clamp boundary
+                    obj.position.x = THREE.MathUtils.clamp(obj.position.x, -50, 50);
+                    obj.position.z = THREE.MathUtils.clamp(obj.position.z, -50, 50);
+                    if(obj.position.x === -50 || obj.position.x === 50 || 
+                        obj.position.z === -50 || obj.position.z === 50){
+                        obj.rotation.y += THREE.MathUtils.degToRad(180);
+                        console.log('rotate');
+                    }
+
+                    obj.position.add(velMonster);
                 }
-
+            }
+            
         }
     }
 
