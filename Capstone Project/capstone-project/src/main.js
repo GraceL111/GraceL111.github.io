@@ -347,6 +347,7 @@ function calcMonsterDist(){
         anims.walk.stop();
         anims.attack.reset();
         anims.attack.play();
+        playerDeath();
         monster.userData.state = 'attack';
       }
       else if(dis >= 3 && monster.userData.state !== 'walk'){
@@ -360,6 +361,11 @@ function calcMonsterDist(){
 }
 
 
+function playerDeath(){
+  
+}
+
+
 
 
 
@@ -370,10 +376,27 @@ const damageList = [];
 
 
 function attack(){
+  let foundName;
+
   raycaster.setFromCamera(pointer, camera);
   const intersects = raycaster.intersectObjects(monstersObjects);
-  if(intersects.length > 0){
-    countHit(intersects[0].object.name, 1, intersects[0].object);
+  if(intersects[0] !== undefined){
+    let selectedName = intersects[0].object.name;
+    
+    for(let i = 0; i < monstersObjects.length; i++){
+      if(monstersObjects[i].name === selectedName){
+        foundName = i;
+      }
+    }
+
+    let dis = monstersObjects[foundName].position.distanceTo(monkGLTF.position);
+    
+    if(dis < 6){
+      //console.log('counted');
+      if(intersects.length > 0){
+        countHit(intersects[0].object.name, 1, intersects[0].object);
+      }
+    }
   }
 }
 
