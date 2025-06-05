@@ -169,8 +169,7 @@ function loadMonk(){
             hit = mixer.clipAction(gltf.animations[7]);
             death = mixer.clipAction(gltf.animations[3]);
 
-
-            idle.play();
+            monkGLTF.userData.dead = false;
 
             currentAction = idle;
             modelLoaded = true;
@@ -207,14 +206,16 @@ window.addEventListener('keyup',
 
 //  ----- Add mousePressed Listener -------
 window.addEventListener('mousedown', 
-  function(event){
-    switchAction(attacks);
-    attack();
+  function(){
+    if(monkGLTF.userData.dead === false){
+      switchAction(attacks);
+      attack();
+    }
   }
 );
 
 window.addEventListener('mouseup', 
-  function(event){
+  function(){
   }
 );
 
@@ -238,7 +239,7 @@ function thirdPersonCam(){
 }
 
 function characterControl(){
-    let moved = false;   // control animations
+  let moved = false;   // control animations
 
   let vel = new THREE.Vector3(0, 0, 0.1);
 
@@ -255,7 +256,7 @@ function characterControl(){
 
     let nextPos = monkGLTF.position.clone().add(vel);
 
-    if(keys['w'] === true && isInBound(nextPos)){  // Move foward
+    if(keys['w'] === true && isInBound(nextPos) && monkGLTF.userData.dead === false){  // Move foward
       //console.log(vel);
       monkGLTF.position.add(vel);
       moved = true;
@@ -265,15 +266,15 @@ function characterControl(){
     let vecBackOffset = new THREE.Vector3(0, 1, 0);
     backVel.applyAxisAngle(vecBackOffset, monkGLTF.rotation.y);
 
-    if(keys['s'] === true && isInBound(nextPos)){      // Move backwards
+    if(keys['s'] === true && isInBound(nextPos) && monkGLTF.userData.dead === false){      // Move backwards
       monkGLTF.position.add(backVel);
       moved = true;
     }
-    if(keys['a'] === true){    // rotate left
+    if(keys['a'] === true && monkGLTF.userData.dead === false){    // rotate left
       monkGLTF.rotation.y += 0.05;
       moved = true;
     }
-    if(keys['d'] === true){    // rotate right
+    if(keys['d'] === true && monkGLTF.userData.dead === false){    // rotate right
       monkGLTF.rotation.y -= 0.05;
       moved = true;
     }
@@ -309,6 +310,9 @@ function isInBound(pos){
 
 //----------- Monster Attack system -----------\
 
+export let playerStats = {
+  playerHealth: 6,
+}
 
 function calcMonsterDist(){
   if(modelLoaded === true){
@@ -319,7 +323,7 @@ function calcMonsterDist(){
       //console.log(monstersObjects[i].name + dis);
 
       // turn to face player
-      if(dis < 15 && monstersObjects[i].userData.dead !== true){
+      if(dis < 15 && monstersObjects[i].userData.dead !== true && monkGLTF.userData.dead === false){
         let disX = monkGLTF.position.x - monster.position.x;
         let disZ = monkGLTF.position.z - monster.position.z;
         let targetAngle = Math.atan2(disX, disZ);
@@ -343,26 +347,54 @@ function calcMonsterDist(){
       }
 
       // attack animation
-      if(dis < 3 && monster.userData.dead !== true && monster.userData.state !== 'attack'){
-        anims.walk.stop();
-        anims.attack.reset();
-        anims.attack.play();
-        playerDeath();
-        monster.userData.state = 'attack';
+      if(dis < 3 && monster.userData.dead === false && monkGLTF.userData.dead === false){
+        if(monster.userData.state !== 'attack'){
+          anims.walk.stop();
+          anims.attack.reset().play();
+          monster.userData.state = 'attack';
+        }
+
+        if(playerStats.playerHealth <= 0){
+          playerDeath();
+          monster.userData.continue = false;
+          playerStats.playerHealth = 6;
+        }
+
       }
-      else if(dis >= 3 && monster.userData.state !== 'walk'){
+      else if(dis >= 3 && monster.userData.state !== 'walk' && monkGLTF.userData.dead === false){
         anims.attack.stop();
         anims.walk.reset();
         anims.walk.play();
         monster.userData.state = 'walk';
       }
+
+      // stopping animation
+      if(justDied === true){
+        for(let i = 0; i < monstersObjects.length; i++){
+          const monster = monstersObjects[i];
+          const anims = monstersAnimation[i];
+
+          if(!monster.userData.dead === true){
+            anims.attack.stop();
+            anims.walk.stop();
+          }
+        }
+        justDied = false;
+      }
     }
   }
 }
 
+let justDied = false;
 
 function playerDeath(){
-  
+  monkGLTF.userData.dead = true;
+  death.reset();
+  death.setLoop(THREE.LoopOnce);
+  death.clampWhenFinished = true;
+  death.play();
+
+  justDied = true;
 }
 
 
@@ -391,7 +423,7 @@ function attack(){
 
     let dis = monstersObjects[foundName].position.distanceTo(monkGLTF.position);
     
-    if(dis < 6){
+    if(dis < 4){
       //console.log('counted');
       if(intersects.length > 0){
         countHit(intersects[0].object.name, 1, intersects[0].object);
@@ -485,10 +517,15 @@ function animate(){       // draw()
   characterControl();
 
   //monsters
-  if(loaded === true){
+  if(loaded === true && modelLoaded === true){
     monsters.update();
     calcMonsterDist();
+    if(monkGLTF.userData.dead === true){
+      idle.stop();
+      idle.reset();
+    }
   }
+
 
 
 

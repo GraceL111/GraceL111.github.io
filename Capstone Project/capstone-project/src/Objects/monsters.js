@@ -2,7 +2,7 @@
 
 import * as THREE from 'three';
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
-import { scene, monkGLTF } from '../main.js'
+import { scene, monkGLTF, playerStats } from '../main.js'
 
 export const monstersList = [
     '/assets/monsters/Birb.gltf',
@@ -64,8 +64,26 @@ export class Monsters{
                             death: mixer.clipAction(gltf.animations[0]),
                             hit: mixer.clipAction(gltf.animations[2]),
                     };
+
+                    // Set up attack loops:
+
+                    animations.attack.setLoop(THREE.LoopOnce);
                     
-                    console.log(monstersObjects);
+
+                    animations.mixer.addEventListener('finished', 
+                        function(){
+                            let dist = monster.position.distanceTo(monkGLTF);
+                            console.log(playerStats.playerHealth);
+                            
+                            if(monster.userData.dead === false && monkGLTF.userData.dead === false ){
+                                playerStats.playerHealth--;
+                                
+                                // Call GUI Here
+                            }
+                        }
+                    );
+                    
+                    //console.log(monstersObjects);
                     monstersAnimation.push(animations);
                     monstersObjects.push(monster);
 
@@ -83,7 +101,7 @@ export class Monsters{
                 const dist = obj.position.distanceTo(monkGLTF.position);
                 
                 // auto movement
-                if(dist >= 15 && obj.userData.dead === false){
+                if(dist >= 15 && obj.userData.dead === false && monkGLTF.userData.dead === false){
                     let velMonster = new THREE.Vector3(0, 0, 0.02);
                     let velMonsterOffset = new THREE.Vector3(0, 1, 0);
                     velMonster.applyAxisAngle(velMonsterOffset, obj.rotation.y);
@@ -94,7 +112,7 @@ export class Monsters{
                     if(obj.position.x === -50 || obj.position.x === 50 || 
                         obj.position.z === -50 || obj.position.z === 50){
                         obj.rotation.y += THREE.MathUtils.degToRad(180);
-                        console.log('rotate');
+                        //console.log('rotate');
                     }
 
                     obj.position.add(velMonster);
