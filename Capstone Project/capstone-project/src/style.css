@@ -42,6 +42,22 @@ h1 {
   text-align: center;
 }
 
+#game_ui {
+  position: absolute;
+  object-position: center;
+  height: 10cm;
+  width: 5cm;
+  margin-right: 2cm;
+  background-color: red;
+}
+
+#health_container{
+  height: 5cm;
+  width: 6px;
+  background-color: red;
+
+}
+
 .logo {
   height: 6em;
   padding: 1.5em;

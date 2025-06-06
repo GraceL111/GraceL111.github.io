@@ -1,13 +1,86 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Capstone Project</title>
-  </head>
-  <body>
-    <div id="app"></div>
-    <script type="module" src="/src/main.js"></script>
-  </body>
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Capstone Project</title>
+  <!--<link rel = "stylesheet" href="style.css">-->
+  <style>
+    div#game_ui {
+      position: absolute;
+      right: 1px;
+      top: 5%;
+      height: 60px;
+      width: 40%;
+      background-color: grey;
+    }
+    div#characterPic{
+      width: 50%;
+      height: 100%;
+    }
+
+    img#character_img {
+      object-fit: cover;
+      width: 50%;
+      height: 100%;
+    
+    }
+    div#health{
+      margin-top: -20%;
+    }
+    p#health_label{
+      float:left;
+      font-size: small;
+      font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+      margin-top: 0%;
+      margin-left: 50%;
+    }
+    div#health_bar{
+      float: right;
+      margin-top: -15px;
+      width: 50%;
+      height: 10px;
+      background-color: red;
+      transition: width 0.5s ease-out;
+    }
+    div#stamina{
+      margin-top: -10%;
+    }
+    p#stamina_label{
+      float:left;
+      font-size: small;
+      font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+      margin-top: 0%;
+      margin-left: 50%;
+    }
+    div#stamina_bar{
+      float: right;
+      margin-top: -15px;
+      width: 50%;
+      height: 10px;
+      background-color: blue;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id='game_ui'>
+    <div id='characterPic'>
+      <img src="assets/characterPic.png" id="character_img"> 
+    </div>
+    <div id='health'>
+      <p id="health_label"> Health</p>
+      <div id="health_bar"></div>
+    </div>
+    <div id ="stamina">
+      <p id="stamina_label">Stamina</p>
+      <div id="stamina_bar"></div>
+    </div>
+  </div>
+  <script type="module" src="/src/main.js"></script>
+</body>
+
 </html>

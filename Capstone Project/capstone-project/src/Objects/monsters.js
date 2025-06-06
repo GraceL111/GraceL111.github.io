@@ -2,7 +2,7 @@
 
 import * as THREE from 'three';
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
-import { scene, monkGLTF, playerStats } from '../main.js'
+import { scene, monkGLTF, playerStats, damage } from '../main.js'
 
 export const monstersList = [
     '/assets/monsters/Birb.gltf',
@@ -79,6 +79,7 @@ export class Monsters{
                                 playerStats.playerHealth--;
                                 
                                 // Call GUI Here
+                                damage();
                             }
                         }
                     );

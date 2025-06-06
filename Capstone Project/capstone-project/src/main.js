@@ -312,7 +312,10 @@ function isInBound(pos){
 
 export let playerStats = {
   playerHealth: 6,
+  playerStamina: 10,
 }
+
+let firstHit = 0;
 
 function calcMonsterDist(){
   if(modelLoaded === true){
@@ -352,6 +355,7 @@ function calcMonsterDist(){
           anims.walk.stop();
           anims.attack.reset().play();
           monster.userData.state = 'attack';
+          firstHit++;
         }
 
         if(playerStats.playerHealth <= 0){
@@ -397,6 +401,35 @@ function playerDeath(){
   justDied = true;
 }
 
+// ---------- HTML Section-------
+// Health Bar:
+
+const healthBar = document.getElementById('health_bar');
+const staminaBar = document.getElementById('stamina_bar');
+
+let totalHealth = playerStats.playerHealth;
+let totalStamina = playerStats.playerStamina;
+
+let currentHealth = playerStats.playerHealth;
+let currentStamina = playerStats.playerStamina;
+
+function updateHealthBar(){
+  let healthPercentage = (currentHealth/totalHealth) * 100;
+  console.log(firstHit);
+  if(firstHit === 1){
+    healthBar.style.width = (50/60) * 100;
+  }
+  healthBar.style.width = `${healthPercentage}%`;
+  console.log(currentHealth);
+}
+
+export function damage(){
+  currentHealth -= 1;
+  if(currentHealth <= 0){
+    currentHealth = 0;
+  }
+  updateHealthBar();
+}
 
 
 
