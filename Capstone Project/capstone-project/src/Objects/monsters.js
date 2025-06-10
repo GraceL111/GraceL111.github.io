@@ -78,7 +78,7 @@ export class Monsters{
                             if(monster.userData.dead === false && monkGLTF.userData.dead === false ){
                                 playerStats.playerHealth--;
                                 
-                                // Call GUI Here
+                                // Call GUI Here after animation run
                                 damage();
                             }
                         }
