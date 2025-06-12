@@ -61,6 +61,14 @@
       width: 50%;
       height: 10px;
       background-color: blue;
+      transition: width 0.5s ease-out;
+    }
+    p#warnStam{
+      display:none;
+      float:right;
+      margin-top: -18px;
+      margin-right: 35px;
+      transition: display 0.5s ease-out;
     }
   </style>
 </head>
@@ -78,6 +86,17 @@
     <div id ="stamina">
       <p id="stamina_label">Stamina</p>
       <div id="stamina_bar"></div>
+      <p id="warnStam"> No Stamina </p>
+    </div>
+  </div>
+
+
+  <div id="inventory">
+    <div id="inventory_label">
+      <img src = 'assets/backpack.png' id = 'bp_icon'>
+      <div id="inventory_tab">
+        <img src = "assets/roguePic.png" id="rogue_img">
+      </div>
     </div>
   </div>
   <script type="module" src="/src/main.js"></script>

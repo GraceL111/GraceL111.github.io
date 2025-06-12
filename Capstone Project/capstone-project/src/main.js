@@ -189,6 +189,8 @@ function switchAction(newAction){
 
 // -------Make KeyPressed Listerner ---------
 const keys = {};
+let invalid = false;  // attack GUI
+
 
 window.addEventListener('keydown',
   function(event){    // access property
@@ -205,19 +207,24 @@ window.addEventListener('keyup',
 );
 
 //  ----- Add mousePressed Listener -------
+
+const warningStam = document.getElementById('warnStam');
+
 window.addEventListener('mousedown', 
   function(){
     if(monkGLTF.userData.dead === false){
-      switchAction(attacks);
-      attack();
+      if(invalid !== true){
+        stamGUI();
+        switchAction(attacks);
+        attack();
+      }
+      else{
+        warningStam.style.display = 'block';
+      }
     }
   }
 );
 
-window.addEventListener('mouseup', 
-  function(){
-  }
-);
 
 
 function thirdPersonCam(){
@@ -316,6 +323,7 @@ export let playerStats = {
 }
 
 let startHit = 3; // Start's at 50% health bar
+let startStam = 5;
 
 
 function calcMonsterDist(){
@@ -421,7 +429,26 @@ export function damage(){
   if(startHit < totalHealth){
     startHit++;
     updateHealthBar();
-    console.log(`${startHit}`);
+    //console.log(`${startHit}`);
+  }
+}
+
+
+function updateStamina(){
+  let attack = totalStamina - startStam;
+  let StamPercent = (attack/totalStamina) * 100;
+  staminaBar.style.width = `${StamPercent}%`;
+}
+
+function stamGUI(){
+  if(startStam < totalStamina){
+    startStam++;
+    updateStamina();
+    console.log(startStam);
+  }
+  else{
+    invalid = true;
+    console.log(invalid);
   }
 }
 
@@ -451,7 +478,6 @@ function attack(){
     let dis = monstersObjects[foundName].position.distanceTo(monkGLTF.position);
     
     if(dis < 4){
-      //console.log('counted');
       if(intersects.length > 0){
         countHit(intersects[0].object.name, 1, intersects[0].object);
       }
