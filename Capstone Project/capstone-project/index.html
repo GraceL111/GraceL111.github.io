@@ -81,8 +81,7 @@
       left: 20px;
       width: 200px;
       height: 200px;
-      background-color: darkblue;
-      border:2px white;
+      background-color: darkred;
     }
 
     img#bp_icon{
@@ -120,14 +119,86 @@
       width: 90px;
       height: 150px;
     }
-    div#cabin{
+    div#cabins{
       position: fixed;
       display: block;
-      bottom: 40px;
+      bottom: 80px;
       left:20px;
       width: 200px;
-      height: 200px;
-      background-color: white;
+      height:90px;
+      background-color: darkred;
+    }
+    div#cab_one{
+      position: fixed;
+      display: block;
+      width: 50px;
+      height: 50px;
+      bottom: 200px;
+      left: 80px;
+      background-color: darkred;
+      border:2px solid black;
+    }
+    div#cab_two{
+      position: fixed;
+      display: block;
+      width: 50px;
+      height: 50px;
+      bottom: 200px;
+      left: 160px;
+      background-color: darkred;
+      border:2px solid black;
+    }
+    div#health_cab{
+      position: fixed;
+      display: block;
+      width: 50px;
+      height: 50px;
+      bottom: 100px;
+      left: 50px;
+      background-color: darkred;
+      border:2px solid black;
+    }
+    div#stamina_cab{
+      position: fixed;
+      display: block;
+      width: 50px;
+      height: 50px;
+      bottom: 100px;
+      left: 140px;
+      background-color: darkred;
+      border: 2px solid black;
+    }
+    img#stamina_img{
+      display: none;
+      position: fixed;
+      width: 50px;
+      height: 50px;
+      bottom: 102px;
+      left: 141.8px;
+    }
+    img#health_img{
+      display: none;
+      position: fixed;
+      width: 50px;
+      height: 50px;
+      bottom: 102px;
+      left: 51.8px;
+    }
+    img#cab1_img{
+      display: block;
+      position: fixed;
+      width: 50px;
+      height: 50px;
+      bottom: 201px;
+      left: 81.8px;
+    }
+    img#cab2_img{
+      display: block;
+      position: fixed;
+      width: 50px;
+      height: 50px;
+      bottom: 201px;
+      left: 161.8px;
     }
     
   </style>
@@ -165,7 +236,18 @@
       <div id="inventory_tab">
         <img src = "assets/roguePic.png" id="rogue_img">
         <div id="cabins">
-          <div id="cab"></div>
+          <div id="cab_one">
+            <img src = 'assets/viking-helmet.png' id="cab1_img">
+          </div>
+          <div id="cab_two">
+            <img src="assets/abdominal-armor.png" id="cab2_img">
+          </div>
+          <div id="stamina_cab">
+            <img src = 'assets/standing-potion.png' id="stamina_img">
+          </div>
+          <div id="health_cab">
+            <img src = 'assets/health-potion.png' id="health_img">
+          </div>
         </div>
       </div>
     </div>

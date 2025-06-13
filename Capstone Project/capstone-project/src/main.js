@@ -453,7 +453,6 @@ function stamGUI(){
 
 // ------- Inventory System-------
 
-const backIcon = document.getElementById('bp_icon');
 const inventoryTab = document.getElementById('inventory_tab');
 
 
@@ -472,6 +471,9 @@ window.addEventListener('keydown', function(event){
   }
 });
 
+// --------- Health Potion ------
+
+const healthPotion = document.getElementById('health_img');
 
 
 
