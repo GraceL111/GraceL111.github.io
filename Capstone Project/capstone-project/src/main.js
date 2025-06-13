@@ -18,8 +18,6 @@ const camera = new THREE.PerspectiveCamera(45, width / height, 1, 2000);
 camera.position.set(50, 50, 50);
 // fov = zoom in or out      aspect = rendering space    near & far = rendering limitations
 
-const cameraHelper = new THREE.CameraHelper(camera);
-scene.add(cameraHelper);
 
 scene.background = new THREE.Color(0x87ceeb);
 
@@ -433,7 +431,7 @@ export function damage(){
   }
 }
 
-
+// Stamina Bar:
 function updateStamina(){
   let attack = totalStamina - startStam;
   let StamPercent = (attack/totalStamina) * 100;
@@ -451,6 +449,29 @@ function stamGUI(){
     console.log(invalid);
   }
 }
+
+
+// ------- Inventory System-------
+
+const backIcon = document.getElementById('bp_icon');
+const inventoryTab = document.getElementById('inventory_tab');
+
+
+window.addEventListener('keydown', function(event){
+  const key = event.key.toLowerCase();
+  if(key === 'b'){
+    if(inventoryTab.style.display === 'none' || inventoryTab.style.display === ''){
+      inventoryTab.style.display = 'block';
+    }
+  }
+  
+  if(key === 'escape'){
+    if(inventoryTab.style.display === 'block'){
+      inventoryTab.style.display = 'none';
+    }
+  }
+});
+
 
 
 

@@ -13,11 +13,11 @@
       right: 1px;
       top: 5%;
       height: 60px;
-      width: 40%;
+      width: 20%;
       background-color: grey;
     }
     div#characterPic{
-      width: 50%;
+      width: 100%;
       height: 100%;
     }
 
@@ -28,7 +28,7 @@
     
     }
     div#health{
-      margin-top: -20%;
+      margin-top: -40%;
     }
     p#health_label{
       float:left;
@@ -65,17 +65,85 @@
     }
     p#warnStam{
       display:none;
+      font-size: small;
       float:right;
-      margin-top: -18px;
-      margin-right: 35px;
+      margin-top: -15px;
+      margin-right: 10px;
       transition: display 0.5s ease-out;
     }
+
+    /* Inventory */
+
+    div#inventory_tab{
+      display:none;
+      position:fixed;
+      bottom: 80px;
+      left: 20px;
+      width: 200px;
+      height: 200px;
+      background-color: darkblue;
+      border:2px white;
+    }
+
+    img#bp_icon{
+      display:block;
+      position:fixed;
+      width:50px;
+      height:50px;
+      bottom: 20px;
+      left: 20px;
+      cursor: pointer;
+    }
+    img#rogue_img{
+      display: block;
+      position:fixed;
+      width: 50px;
+      height: 100px;
+      bottom: 175px;
+      left:25px;
+    }
+    div#center_dot{
+      position: fixed;
+      top: 52%;
+      left: 52%;
+      width: 6px;
+      height: 6px;
+      background-color: red;
+      border-radius: 50%;
+    }
+
+    div#control_instruction{
+      position:fixed;
+      font-size: small;
+      bottom:0px;
+      right: 0px;
+      width: 90px;
+      height: 150px;
+    }
+    div#cabin{
+      position: fixed;
+      display: block;
+      bottom: 40px;
+      left:20px;
+      width: 200px;
+      height: 200px;
+      background-color: white;
+    }
+    
   </style>
 </head>
 
 <body>
 
+  <div id="control_instruction">
+      <p id="move"> WASD - Move</p>
+      <p id="run"> SHIFT - Run</p>
+      <p id="bp"> B - Backpack</p>
+      <p id="attack"> LMB - Attack</p>
+      <p id="quit"> ESC - Exit</p>
+  </div>
   <div id='game_ui'>
+    <div id="center_dot"></div>
     <div id='characterPic'>
       <img src="assets/characterPic.png" id="character_img"> 
     </div>
@@ -96,10 +164,12 @@
       <img src = 'assets/backpack.png' id = 'bp_icon'>
       <div id="inventory_tab">
         <img src = "assets/roguePic.png" id="rogue_img">
+        <div id="cabins">
+          <div id="cab"></div>
+        </div>
       </div>
     </div>
   </div>
   <script type="module" src="/src/main.js"></script>
 </body>
-
 </html>
