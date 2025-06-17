@@ -73,7 +73,6 @@ export class Monsters{
                     animations.mixer.addEventListener('finished', 
                         function(){
                             let dist = monster.position.distanceTo(monkGLTF);
-                            console.log(playerStats.playerHealth);
                             
                             if(monster.userData.dead === false && monkGLTF.userData.dead === false ){
                                 playerStats.playerHealth--;
@@ -84,7 +83,6 @@ export class Monsters{
                         }
                     );
                     
-                    //console.log(monstersObjects);
                     monstersAnimation.push(animations);
                     monstersObjects.push(monster);
 
@@ -113,7 +111,6 @@ export class Monsters{
                     if(obj.position.x === -50 || obj.position.x === 50 || 
                         obj.position.z === -50 || obj.position.z === 50){
                         obj.rotation.y += THREE.MathUtils.degToRad(180);
-                        //console.log('rotate');
                     }
 
                     obj.position.add(velMonster);

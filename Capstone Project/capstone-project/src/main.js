@@ -1,13 +1,35 @@
 // Capstone Project
 // Name: Grace Li
-// Date: May 11, 2025
-// 
+// Start Date: May 11, 2025
+// End Date: June 16, 2025
+
+
+
+// NOTE: Don't change any of the code
+//       If the web closed, click the Localhost in the terminal
+//       Refresh the page with the refresh icon in the web
+//       Don't go live on VS code
+// Feedback:
+//strong foundation, i couldnt seem to get the character to be able to attack the enemies, im not sure if that was intentional, but the 3d aspect seemed to work well. The enemy pasthfindaing was also cool
+//Very good game to play but I can not attack enemies.
+
+//great concept for a game I like how it is 3D and that there are terrain elements
+// great concept.. Its hard to build your own engine and a 3d game in java script.. But the game is built awesome.. There are a few things i wante dto point out i wasnt sure what LMB was and hwo could i attack and at  a point i got 0 health and i didnt die
+// I really like this game! I wasn't exactly sure if my attack was working quite right and at one point the ennemy just stared at me and din't even kill. Other than that, cool concept!
+
+//attack is not work.
+//the 3d engine looks very cool!!, tho some bugs are there like attack doesnt work
+//and the enemies sometimes behave awkwardly 
+
+
+
 
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { loadTrees, treeObjects, groundObjects, loadGroundObj } from './Objects/LoadObject';
 import { Monsters, monstersObjects, monstersAnimation, monsterRandAng } from './Objects/monsters';
+import { loadHealth, pickUpPotion, pickUp, healthPotion, loadStam, staminaPotion, pickUpStamPotion, pickUpStam } from './Objects/items';
 
 
 // ----------Set up-----------
@@ -30,7 +52,7 @@ const controls = new OrbitControls(camera, canvas);
 
 
 // --------Light -----------
-const light = new THREE.AmbientLight(0xffffff, 40);
+const light = new THREE.AmbientLight(0xffffff, 20);
 scene.add(light);
 const directionLight = new THREE.DirectionalLight(0xffffff, 1);
 directionLight.position.set(50, 50, 50);
@@ -427,26 +449,25 @@ export function damage(){
   if(startHit < totalHealth){
     startHit++;
     updateHealthBar();
-    //console.log(`${startHit}`);
   }
 }
 
 // Stamina Bar:
 function updateStamina(){
-  let attack = totalStamina - startStam;
-  let StamPercent = (attack/totalStamina) * 100;
+  //let attack = totalStamina - startStam;
+  let StamPercent = (startStam/totalStamina) * 100;
   staminaBar.style.width = `${StamPercent}%`;
 }
 
 function stamGUI(){
-  if(startStam < totalStamina){
-    startStam++;
+  if(startStam > 0){
+    startStam--;
     updateStamina();
-    console.log(startStam);
+    invalid = false;
   }
   else{
     invalid = true;
-    console.log(invalid);
+    warningStam.style.display = 'block';
   }
 }
 
@@ -470,12 +491,6 @@ window.addEventListener('keydown', function(event){
     }
   }
 });
-
-// --------- Health Potion ------
-
-const healthPotion = document.getElementById('health_img');
-
-
 
 
 // --------- Attack system ---------
@@ -512,15 +527,20 @@ function countHit(monster, hit, monsterObj){
   let found =false;
   for(let d = 0; d < damageList.length; d++){
     if(damageList[d][0] === monster){
+      damageList[d][1] += hit;
+
       if(damageList[d][1] >= 5){
-        damageList[d][1] = 0;
-        playMonsterDeath(monsterObj);
+        damageList[d][1] = 5;
+
+        if(!monsterObj.userData.dead){
+          monsterObj.userData.dead = true;
+          playMonsterDeath(monsterObj);
+        }
       }
       else{
-        damageList[d][1] += hit;
+        found = true;
+        break;
       }
-      found = true;
-      break;
     }
   }
 
@@ -558,7 +578,60 @@ function playMonsterDeath(monster){
 }
 
 
+//--------- Health Potion -------------
 
+const randomPosX = THREE.MathUtils.randFloat(-50, 35);
+const randomPosZ = THREE.MathUtils.randFloat(-50, 35);
+
+let inScene = true;
+
+loadHealth(randomPosX, randomPosZ);
+
+window.addEventListener('keydown', 
+  function(event){
+    if(event.key.toLowerCase() === 'e' && pickUp === true){
+      this.document.getElementById('pickupTab').style.display = 'none';
+      scene.remove(healthPotion);
+      inScene = false;
+      healthBar.style.width = `100%`;
+    }
+  }
+);
+
+
+// ------------- Stamina Potion ---------
+const ranPositionX = THREE.MathUtils.randFloat(-50, 35);
+const ranPositionZ = THREE.MathUtils.randFloat(-50, 35);
+
+let inSceneS = true;
+
+loadStam(ranPositionX, ranPositionZ);
+
+window.addEventListener('keydown', 
+  function(event){
+    if(event.key.toLowerCase() === 'r' && pickUpStam === true){
+      this.document.getElementById('pickupStamTab').style.display = 'none';
+      scene.remove(staminaPotion);
+      inSceneS = false;
+      staminaBar.style.width = `100%`;
+    }
+  }
+);
+
+function refillStamina(){
+  if(startStam < totalStamina){
+    startStam += 0.01;
+    if(startStam > totalStamina){
+      startStam = totalStamina;
+    }
+    updateStamina();
+  }
+
+  if(startStam > 1 && invalid){
+    invalid = false;
+    warningStam.style.display = 'none';
+  }
+}
 
 
 
@@ -577,6 +650,29 @@ function animate(){       // draw()
   // Third Person Camera
   thirdPersonCam();
 
+
+  // Health Potion:
+  pickUpPotion();
+
+  const randomPosX = THREE.MathUtils.randFloat(-50, 35);
+  const randomPosZ = THREE.MathUtils.randFloat(-50, 35);
+
+  if(inScene === false){
+    loadHealth(randomPosX, randomPosZ);
+    inScene = true;
+  }
+
+  // Stam Potion:
+  pickUpStamPotion();
+  refillStamina();
+
+  const ranPositionX = THREE.MathUtils.randFloat(-50, 35);
+  const ranPositionZ = THREE.MathUtils.randFloat(-50, 35);
+
+  if(inSceneS === false){
+    loadStam(ranPositionX, ranPositionZ);
+    inSceneS = true;
+  }
 
   // Update Animation
   const timeDelta = clock.getDelta();
